@@ -30,7 +30,6 @@ def login_page(request):
             messages.error(request,"User doesnot exists")
         else:
             login(request,user)
-            print("hELLO")
             return redirect('/register')
     return render(request,"signin.html")
 
