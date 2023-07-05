@@ -29,7 +29,6 @@ def login_page(request):
         if user is None:
             messages.error(request,"User doesnot exists")
         else:
-            print("Hello")
             login(request,user)
             return redirect('/register')
     return render(request,"signin.html")
