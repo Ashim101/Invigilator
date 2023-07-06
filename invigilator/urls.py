@@ -24,13 +24,9 @@ urlpatterns = [
     path('logout/',logout_page,name="logout"),
     path('home/',home,name="home"),
     path('addexam/',addexam,name="addexam"),
-
-
-
     path('addbuilding/',addbuilding,name="addbuilding"),
+    path('addroom/',addroom,name="addroom"),
 
+    path('addinvigilator/',addinvigilator,name="addinvigilator"),
 
-
-
-    
 ]

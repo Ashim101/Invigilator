@@ -1,0 +1,50 @@
+{% extends 'home.html' %}
+{%block content%}
+
+<h1>Add invigilator</h1>
+<div class="container">
+  <form method="post" action="/newapp" >
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="newappname" class="form-label">Name</label>
+      <input type="text"required class="form-control" id="newappname" name="newappname" placeholder="Enter name">
+
+    </div>
+    <div class="mb-3">
+      <label for="newappemail" class="form-label">Email address</label>
+      <input type="text" class="form-control" id="newappemail" name="newappemail" placeholder="Enter email">
+
+    </div>
+    <div class="mb-3">
+      <label for="newappphone"required class="form-label">Phone Number</label>
+      <input type="tel"required class="form-control" id="newappphone" name="newappphone" placeholder="Enter contact number">
+
+    </div>
+    <div class="mb-3">
+      <label for="newappposition" class="form-label">Position</label>
+      <input type="text"required class="form-control" id="newappposition" name="newappposition" placeholder="Enter position">
+
+    </div>
+    <div class="mb-3">
+      <label for="newappaddress" class="form-label">Address</label>
+      <input type="text"required class="form-control" id="newappaddress" name="newappaddress" placeholder="Enter address">
+
+    </div>
+    <div class="mb-3">
+      <label for="newappdepart" class="form-label">Department</label>
+      <input type="text"required class="form-control" id="newappdepart" name="newappdepart" placeholder="Enter department">
+      {% comment %} <select class="form-select" aria-label="Default select example" id="newappdepart" name="newappdepart" required>
+      
+      <option value="">Select your department</option>
+      <option value="Department of Computer and Electronics Engineering">Department of Computer and Electronics Engineering</option>
+      <option value="Department of Electrical Engineering">Department of Electrical Engineering</option>
+      <option value="Department of Civil Engineering">Department of Civil Engineering</option> {% endcomment %}
+    </select>
+    </div>
+
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+{% endblock %}

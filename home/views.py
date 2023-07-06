@@ -42,7 +42,7 @@ def logout_page(request):
     return redirect("/login")
 
 def addroom(request):
-    pass
+    return render(request,"addroom.html")
 
 def addbuilding(request):
     return render(request,"addbuilding.html")
@@ -51,5 +51,5 @@ def addbuilding(request):
 def addexam(request):
     return render(request,"addexam.html")
 def addinvigilator(request):
-    pass
+    return render(request,"addinvigilator.html")
 
