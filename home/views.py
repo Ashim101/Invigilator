@@ -31,7 +31,7 @@ def login_page(request):
         else:
             login(request,user)
             return redirect('/register')
-    return render(request,"signin.html")
+    return render(request,"home.html")
 
 
 def logout_page(request):
