@@ -1,15 +1,19 @@
 {% extends 'home.html' %}
 {%block content%}
 <h1>Add room</h1>
-<form>
-<div class="container">
-  <form method="post" action="/addroom">
+  <form method="POST">
     {% csrf_token %}
+    <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="building_name">
+      <option selected>Select the building</option>
+      {%for Building in queryset%}
+      <option>{{Building.building_name}}</option>
+     {%endfor%}
+    </select>
+
     <div class="mb-3">
-      <label for="roomname" class="form-label">Room Name</label>
-      <input type="text" required class="form-control" id="roomname" name="roomname" placeholder="Enter room name">
+      <label for="room_number" class="form-label">Room Name</label>
+      <input type="text" required class="form-control" id="room_number" name="room_number" placeholder="Enter room name">
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
-</div>
 {% endblock %}

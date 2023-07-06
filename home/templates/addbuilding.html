@@ -16,11 +16,11 @@
 
 <h1>Add building</h1>
 <div class="container">
-  <form method="post" action="/addbuilding">
+  <form method="post">
     {% csrf_token %}
     <div class="mb-3">
       <label for="buildingname" class="form-label">Building Name</label>
-      <input type="text" required class="form-control" id="buildingname" name="buildingname" placeholder="Enter building name">
+      <input type="text" required class="form-control" id="buildingname" name="Building_name" placeholder="Enter building name">
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>

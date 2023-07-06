@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
+from home.models import *
 # Create your views here.
 @login_required(login_url='/login/')
 def home(request):
@@ -42,14 +43,40 @@ def logout_page(request):
     return redirect("/login")
 
 def addroom(request):
-    return render(request,"addroom.html")
+ if(request.method=="POST"):
+    building_name=request.POST.get("building_name")
+    building=Building.objects.filter(building_name=building_name)
+    room_number=request.POST.get("room_number")
+    print(room_number,building[0].building_name)
+    Room.objects.create(building_name=building.first(),room_number=room_number)
+ queryset=Building.objects.all()
+ print(queryset)
+ return render(request,"addroom.html",{"queryset":queryset})
 
 def addbuilding(request):
+    if(request.method=="POST"):
+        Building_name=request.POST.get("Building_name")
+        Building.objects.create(building_name=Building_name)
+        
     return render(request,"addbuilding.html")
 
 
 def addexam(request):
     return render(request,"addexam.html")
 def addinvigilator(request):
+    if(request.method=="POST"):
+        Invigilator_firstname=request.POST.get("first_name")
+        Invigilator_lastname=request.POST.get("last_name")
+        Invigilator_age=request.POST.get("age")
+        Invigilator_address=request.POST.get("address")
+        Invigilator_phone_number=request.POST.get("phone_number")
+        Invigilator_gender=request.POST.get("gender")
+        Invigilator_email=request.POST.get("email")
+        Invigilator.objects.create(Invigilator_firstname=Invigilator_firstname,Invigilator_lastname=Invigilator_lastname,Invigilator_gender=Invigilator_gender,Invigilator_address=Invigilator_address,Invigilator_email=Invigilator_email,Invigilator_phone_number=Invigilator_phone_number,Invigilator_age=Invigilator_age)
+
+
+
+
+
     return render(request,"addinvigilator.html")
 
