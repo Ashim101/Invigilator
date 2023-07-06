@@ -40,3 +40,16 @@ def login_page(request):
 def logout_page(request):
     logout(request)
     return redirect("/login")
+
+def addroom(request):
+    pass
+
+def addbuilding(request):
+    return render(request,"addbuilding.html")
+
+
+def addexam(request):
+    return render(request,"addexam.html")
+def addinvigilator(request):
+    pass
+
