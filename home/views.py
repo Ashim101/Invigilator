@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 # Create your views here.
+@login_required(login_url='/login/')
+def home(request):
+    return render(request,"home.html")
 def register(request):
     if(request.method=="POST"):
         first_name=request.POST.get("first_name")
@@ -30,10 +33,10 @@ def login_page(request):
             messages.error(request,"User doesnot exists")
         else:
             login(request,user)
-            return redirect('/register')
-    return render(request,"home.html")
+            return redirect('/home')
+    return render(request,"signin.html")
 
 
 def logout_page(request):
     logout(request)
-    return redirect('/login')
+    return redirect("/login")
