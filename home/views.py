@@ -72,7 +72,6 @@ def addinvigilator(request):
         Invigilator_phone_number=request.POST.get("phone_number")
         Invigilator_gender=request.POST.get("gender")
         Invigilator_email=request.POST.get("email")
-        print("Hello")
         Invigilator.objects.create(Invigilator_firstname=Invigilator_firstname,Invigilator_lastname=Invigilator_lastname,Invigilator_gender=Invigilator_gender,Invigilator_address=Invigilator_address,Invigilator_email=Invigilator_email,Invigilator_phone_number=Invigilator_phone_number,Invigilator_age=Invigilator_age)
 
 
