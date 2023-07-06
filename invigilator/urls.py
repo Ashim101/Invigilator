@@ -23,6 +23,8 @@ urlpatterns = [
     path('login/',login_page,name="login"),
     path('logout/',logout_page,name="logout"),
     path('home/',home,name="home"),
+    path('addexam/',addexam,name="addexam"),
+
 
 
     path('addbuilding/',addbuilding,name="addbuilding"),
