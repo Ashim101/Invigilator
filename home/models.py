@@ -33,7 +33,27 @@ class Invigilator(models.Model):
 
 
 class Exam(models.Model):
-   pass    
+    examination_name=models.CharField(max_length=255,null=True,blank=True)
+    examination_type=models.CharField(max_length=50,null=True,blank=True)
+    semester_type=models.CharField(max_length=50,null=True,blank=True)
+    regular_or_back=models.CharField(max_length=50,null=True,blank=True)
+    building=models.ForeignKey(Building,on_delete=models.CASCADE,related_name="exams",null=True,blank=True)
+    room=models.ForeignKey(Room,on_delete=models.CASCADE,related_name="exams",null=True,blank=True)
+    invigilator=models.ManyToManyField(Invigilator)
+    date=models.DateField(null=True,blank=True)
+    start_time=models.TimeField(null=True,blank=True)
+    end_time=models.TimeField(null=True,blank=True)
+    def name(args):
+     def __str__(self):
+         return self.examination_name
+     
+    
+    class Meta:
+        unique_together=["room","start_time"]
+
+        
+    
+   
     
 
 
