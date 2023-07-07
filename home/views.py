@@ -74,7 +74,7 @@ def addexam(request):
     rooms=None
     if building:
         rooms=Room.objects.filter(building_name__building_name=building, isOccupied=False)
-    invigilator_qury=Invigilator.objects.filter(isAssigned=False)
+    invigilator_query=Invigilator.objects.filter(isAssigned=False)
     building_query=Building.objects.all()
     return render(request,"addexam.html",locals())
 
