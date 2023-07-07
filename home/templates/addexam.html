@@ -74,6 +74,27 @@
       </select>
       <span class="help-block">You can only change this through exam start time.</span>
     </div>
+    <div class="mb-3">
+      <label for="building_name" class="form-label">Select exam Building for exam</label>
+      <select onchange="populate()" class="form-select"   required id="building_name" name="building_name" >
+        <option value=" " selected>dummy</option>
+        {% for building in building_query %}
+        <option value="{{building.building_name}}" {% if request.GET.building == building.building_name %} selected {%endif %}>{{building.building_name}}</option>
+        {%endfor%}
+
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="Room" class="form-label">Select exam Room for exam</label>
+      <select  class="form-select" required id="Room" name="Room">
+        <option value="Morning">Select the rooms</option>
+        {% for room in rooms %}
+        <option value="">{{room.room_number}}</option>
+        {%endfor%}
+
+      </select>
+    </div>
+
     
     
     <div class="mb-3">
@@ -89,94 +110,13 @@
 
 <script>
 
-  {% if addexam_data %}
-  document.getElementById('examtype').value = "{{addexam_data.examtype}}"
-  document.getElementById('examsemtype').value = "{{addexam_data.examsemtype}}"
+  function populate(){
+        building=document.getElementById('building_name').value;
+        window.location="/addexam/?building="+building;
 
-  // document.getElementById('testing').innerHTML="{{addexam_data.examtime}}"  
-  // document.getElementById('testing1').innerHTML="{{addexam_data.examdate}}"  
-  // document.getElementById('testing2').innerHTML="{{addexam_data.newexamdate}}"  
-  // document.getElementById('testing3').innerHTML="{{addexam_data.newexamtime}}"  
-  entranceonot(document.getElementById('examtype'));
-
-  if (document.getElementById('examback').value == "{{addexam_data.regularback}}") {
-    document.getElementById('examback').checked = true;
-  }
-  if (document.getElementById('examregular').value == "{{addexam_data.regularback}}") {
-    document.getElementById('examregular').checked = true;
-  }
-  {% endif %}
-
-  function entranceonot(that) {
-
-    if (that.value == "Exam Entrance") {
-      {% if addexam_data %}
-      document.getElementById('examsemtype').selectedIndex = '0';
-      {% endif %}
-      document.getElementById("oddevenselect").style.display = "none";
-      document.getElementById("regularbackselect").style.display = "none";
-
-      document.getElementById("examsemtype").required = false;
-      document.getElementById('examsemtype').options[1].value = '';
-      document.getElementById('examsemtype').options[2].value = '';
-
-      document.getElementById("examregular").required = false;
-      document.getElementById("examregular").setAttribute("value", "");
-      document.getElementById("examregular").checked = true;
-      document.getElementById("examback").setAttribute("value", "");
-
-    } else {
-      document.getElementById("oddevenselect").style.display = "block";
-      document.getElementById("regularbackselect").style.display = "block";
-
-      document.getElementById("examsemtype").required = true;
-      document.getElementById('examsemtype').options[1].value = "Odd Semester";
-      document.getElementById('examsemtype').options[2].value = 'Even Semester';
-
-      document.getElementById("examregular").required = true;
-      document.getElementById("examregular").setAttribute("value", "Regular exam");
-      document.getElementById("examback").setAttribute("value", "Back exam");
-
-
-    }
-
-  }
-
-  var today = new Date();
-  var dd = today.getDate();
-  var mm = today.getMonth() + 1; //January is 0!
-  var yyyy = today.getFullYear();
-
-  if (dd < 10) {
-    dd = '0' + dd;
-  }
-
-  if (mm < 10) {
-    mm = '0' + mm;
-  }
-  today = yyyy + '-' + mm + '-' + dd;
-  document.getElementById("examdate").setAttribute("min", today);
-  
-  function functiontime(that){
-    starttime=document.getElementById("examtime").value
-    endtime=document.getElementById("examtime_end").value
-    document.getElementById("examtime_end").setAttribute("min", starttime);
-    hrs=starttime.split(':')
-    inthr=+hrs[0]
     
-    if (inthr<12){
-      document.getElementById('examshift').selectedIndex=0;
-    }
-    else if(inthr>12 && inthr<16){
-      document.getElementById('examshift').selectedIndex=1;
-    }
-    else{
-      document.getElementById('examshift').selectedIndex=2;
-    }
   }
-  
-  
-  
+
 
 </script>
 {% endblock %}
