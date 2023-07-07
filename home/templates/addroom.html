@@ -1,6 +1,16 @@
 {% extends 'home.html' %}
 {%block content%}
 <h1>Add room</h1>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
   <form method="POST">
     {% csrf_token %}
     <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="building_name">
@@ -16,4 +26,31 @@
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
+  <hr>
+  <h1>List of the rooms added</h1>
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Building</th>
+        <th scope="col">Room number</th>
+        <th scope="col">Assigned for the exam</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      {%for room in Rooms%}
+
+      <tr>
+        <td>{{forloop.counter}}</td>
+        <td>{{room.building_name}}</td>
+        <td>{{room.room_number}}</td>
+        <td>{{room.isOccupied}}</td>
+        <td><button class="btn btn-info"><a href="/delete/{{room.id}}/">Delete</a></button></td>
+      </tr>
+      {% endfor %}
+
+    </tbody>
+  </table>
+
 {% endblock %}

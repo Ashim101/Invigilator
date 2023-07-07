@@ -8,6 +8,8 @@ from home.models import *
 @login_required(login_url='/login/')
 def home(request):
     return render(request,"home.html")
+
+
 def register(request):
     if(request.method=="POST"):
         first_name=request.POST.get("first_name")
@@ -42,17 +44,23 @@ def logout_page(request):
     logout(request)
     return redirect("/login")
 
+
+@login_required(login_url='/login/')
 def addroom(request):
  if(request.method=="POST"):
     building_name=request.POST.get("building_name")
     building=Building.objects.filter(building_name=building_name)
     room_number=request.POST.get("room_number")
-    print(room_number,building[0].building_name)
-    Room.objects.create(building_name=building.first(),room_number=room_number)
+    try:
+       Room.objects.create(building_name=building.first(),room_number=room_number)
+    except:
+        messages.error(request,"This room is already in the list {}")
  queryset=Building.objects.all()
- print(queryset)
- return render(request,"addroom.html",{"queryset":queryset})
+ addedrooms=Room.objects.all()
+ return render(request,"addroom.html",{"queryset":queryset,"Rooms":addedrooms})
 
+
+@login_required(login_url='/login/')
 def addbuilding(request):
     if(request.method=="POST"):
         Building_name=request.POST.get("Building_name")
@@ -60,9 +68,12 @@ def addbuilding(request):
         
     return render(request,"addbuilding.html")
 
-
+@login_required(login_url='/login/')
 def addexam(request):
     return render(request,"addexam.html")
+
+
+@login_required(login_url='/login/')
 def addinvigilator(request):
     if(request.method=="POST"):
         Invigilator_firstname=request.POST.get("first_name")
