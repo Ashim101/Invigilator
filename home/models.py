@@ -25,6 +25,7 @@ class Invigilator(models.Model):
     Invigilator_gender=models.CharField(max_length=20,blank=True,null=True)
     Invigilator_address=models.CharField(max_length=225,blank=True,null=True)
     Invigilator_phone_number=models.CharField(max_length=225,blank=True,null=True)
+    isAssigned=models.BooleanField(default=False)
     
     def __str__(self):
         return self.Invigilator_firstname+' '+self.Invigilator_lastname

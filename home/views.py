@@ -70,7 +70,9 @@ def addbuilding(request):
 
 @login_required(login_url='/login/')
 def addexam(request):
-    return render(request,"addexam.html")
+    invigilator_qury=Invigilator.objects.filter(isAssigned=False)
+    building_query=Building.objects.all()
+    return render(request,"addexam.html",{"invigilators":invigilator_qury,"building":building_query})
 
 
 @login_required(login_url='/login/')
