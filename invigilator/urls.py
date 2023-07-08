@@ -20,14 +20,14 @@ from django.urls import path
 from home.views import *
 
 urlpatterns = [
+    path("", home, name="home"),
     path("admin/", admin.site.urls),
     path("register/", register, name="register"),
     path("login/", login_page, name="login"),
     path("logout/", logout_page, name="logout"),
-    path("home/", home, name="home"),
-    path("get-rooms/", get_rooms, name="get_rooms"),
-    path("addexam/", addexam, name="addexam"),
-    path("addbuilding/", addbuilding, name="addbuilding"),
-    path("addroom/", addroom, name="addroom"),
-    path("addinvigilator/", addinvigilator, name="addinvigilator"),
+    path("rooms/", rooms, name="rooms"),
+    path("exams/", exams, name="exams"),
+    path("buildings/", buildings, name="buildings"),
+    # path("get-rooms/", get_rooms, name="get_rooms"),
+    path("invigilators/", invigilators, name="invigillators"),
 ]

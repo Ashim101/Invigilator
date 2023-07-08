@@ -1,0 +1,51 @@
+
+    {% extends 'base.html' %}
+    {% block content %}
+
+
+{% load crispy_forms_tags %}
+<form action="/exams/" method="POST">
+  {% csrf_token %}
+
+  {{form|crispy}}
+  <input type="submit" class="btn btn-success" value="Create Exam">
+</form>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Semester</th>
+      <th scope="col">Exam Type</th>
+      <th scope="col">date</th>
+      <th scope="col">shift</th>
+      <th scope="col">Start Time</th>
+      <th scope="col">End Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for exam in exams %}
+    <tr>
+      <th scope="row">{{forloop.counter}}</th>
+      <td>{{exam.name}}</td>
+      <td>{{exam.semester_type}}</td>
+      <td>{{exam.regular_or_back}}</td>
+      <td>{{exam.date}}</td>
+      <td>{{exam.shift}}</td>
+      <td>{{exam.start_time}}</td>
+      <td>{{exam.end_time}}</td>
+
+      <td><span class="material-symbols-outlined">
+        edit
+        </span>
+        <span class="material-symbols-outlined">
+          delete
+          </span></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+{% endblock %}

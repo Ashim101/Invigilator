@@ -1,0 +1,50 @@
+
+    {% extends 'base.html' %}
+    {% block content %}
+
+
+{% load crispy_forms_tags %}
+<form action="/invigilators/" method="POST">
+  {% csrf_token %}
+
+  {{form|crispy}}
+  <input type="submit" class="btn btn-success" value="Create Invigilator">
+</form>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Full Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Age</th>
+      <th scope="col">Gender</th>
+      <th scope="col">Address</th>
+      <th scope="col">Phone number</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for invigilator in invigilators %}
+    <tr>
+      <th scope="row">{{forloop.counter}}</th>
+      <td>{{invigilator.fullname}}</td>
+      <td>{{invigilator.email}}</td>
+      <td>{{invigilator.age}}</td>
+      <td>{{invigilator.gender|title}}</td>
+      <td>{{invigilator.address}}</td>
+      <td>{{invigilator.phone_number}}</td>
+
+      <td><span class="material-symbols-outlined">
+        edit
+        </span>
+        <span class="material-symbols-outlined">
+          delete
+          </span></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+{% endblock %}

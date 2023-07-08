@@ -1,0 +1,41 @@
+
+    {% extends 'base.html' %}
+    {% block content %}
+
+
+{% load crispy_forms_tags %}
+<form action="/rooms/" method="POST">
+  {% csrf_token %}
+
+  {{form|crispy}}
+  <input type="submit" class="btn btn-success" value="Create Room">
+</form>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Building</th>
+      <th scope="col">Room Number</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for room in rooms %}
+    <tr>
+      <th scope="row">{{forloop.counter}}</th>
+      <td>{{room.building}}</td>
+      <td>{{room.room_number}}</td>
+      <td><span class="material-symbols-outlined">
+        edit
+        </span>
+        <span class="material-symbols-outlined">
+          delete
+          </span></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+{% endblock %}

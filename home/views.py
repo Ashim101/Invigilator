@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 from home.models import *
+from .forms import BuildingForm, RoomForm, InvigilatorForm, ExamForm
 
 
 # Create your views here.
@@ -55,69 +56,136 @@ def logout_page(request):
     return redirect("/login")
 
 
+# @login_required(login_url="/login/")
+# def addroom(request):
+#     if request.method == "POST":
+#         building_name = request.POST.get("building_name")
+#         building = Building.objects.filter(building_name=building_name)
+#         room_number = request.POST.get("room_number")
+#         try:
+#             Room.objects.create(building_name=building.first(), room_number=room_number)
+#         except:
+#             messages.error(request, "This room is already in the list {}")
+#     queryset = Building.objects.all()
+#     addedrooms = Room.objects.all()
+#     return render(request, "addroom.html", {"queryset": queryset, "Rooms": addedrooms})
+
+
 @login_required(login_url="/login/")
-def addroom(request):
+def buildings(request):
+    form = BuildingForm()
+    building_qs = Building.objects.all()
+    context = {
+        "form":form,
+        "buildings":building_qs
+    }
     if request.method == "POST":
-        building_name = request.POST.get("building_name")
-        building = Building.objects.filter(building_name=building_name)
-        room_number = request.POST.get("room_number")
-        try:
-            Room.objects.create(building_name=building.first(), room_number=room_number)
-        except:
-            messages.error(request, "This room is already in the list {}")
-    queryset = Building.objects.all()
-    addedrooms = Room.objects.all()
-    return render(request, "addroom.html", {"queryset": queryset, "Rooms": addedrooms})
+        form=BuildingForm(request.POST)
+        if form.is_valid():
+           form.save()
+
+    return render(request, "building.html",context=context)
 
 
 @login_required(login_url="/login/")
-def addbuilding(request):
+def rooms(request):
+    form = RoomForm()
+    room_qs = Room.objects.all()
+    context = {
+        "form":form,
+        "rooms":room_qs
+    }
     if request.method == "POST":
-        Building_name = request.POST.get("Building_name")
-        Building.objects.create(building_name=Building_name)
-
-    return render(request, "addbuilding.html")
-
-
-@login_required(login_url="/login/")
-def addexam(request):
-    building = request.GET.get("building", None)
-    rooms = None
-    if building:
-        rooms = Room.objects.filter(
-            building_name__building_name=building, isOccupied=False
-        )
-    invigilator_query = Invigilator.objects.filter(isAssigned=False)
-    building_query = Building.objects.all()
-    return render(request, "addexam.html", locals())
-
+        form=RoomForm(request.POST)
+        if form.is_valid():
+           form.save()
+    return render(request, "room.html",context=context)
 
 @login_required(login_url="/login/")
-def get_rooms(request):
-    building = request.GET.get("building", None)
-    rooms = Room.objects.filter(building_name__building_name=building, isOccupied=False)
-    return render(request, "dropdown_list_opions.html", {"rooms": rooms})
-    # return JsonResponse(list(rooms.values()), safe=False)
-
-
-@login_required(login_url="/login/")
-def addinvigilator(request):
+def exams(request):
+    form = ExamForm()
+    queryset = Exam.objects.all()
+    context = {
+        "form":form,
+        "exams":queryset
+    }
     if request.method == "POST":
-        Invigilator_firstname = request.POST.get("first_name")
-        Invigilator_lastname = request.POST.get("last_name")
-        Invigilator_age = request.POST.get("age")
-        Invigilator_address = request.POST.get("address")
-        Invigilator_phone_number = request.POST.get("phone_number")
-        Invigilator_gender = request.POST.get("gender")
-        Invigilator_email = request.POST.get("email")
-        Invigilator.objects.create(
-            Invigilator_firstname=Invigilator_firstname,
-            Invigilator_lastname=Invigilator_lastname,
-            Invigilator_gender=Invigilator_gender,
-            Invigilator_address=Invigilator_address,
-            Invigilator_email=Invigilator_email,
-            Invigilator_phone_number=Invigilator_phone_number,
-            Invigilator_age=Invigilator_age,
-        )
+        form=ExamForm(request.POST)
+        if form.is_valid():
+           form.save()
 
-    return render(request, "addinvigilator.html")
+    return render(request, "exam.html",context=context)
+
+@login_required(login_url="/login/")
+def invigilators(request):
+    form = InvigilatorForm()
+    queryset = Invigilator.objects.all()
+    context = {
+        "form":form,
+        "invigilators":queryset
+    }
+    if request.method == "POST":
+        form=InvigilatorForm(request.POST)
+        if form.is_valid():
+           form.save()
+
+    return render(request, "invigilator.html",context=context)
+
+@login_required(login_url="/login/")
+def examseddions(request):
+    form = examseddionForm()
+    queryset = examseddion.objects.all()
+    context = {
+        "form":form,
+        "examseddions":queryset
+    }
+    if request.method == "POST":
+        form=examseddionForm(request.POST)
+        if form.is_valid():
+           form.save()
+
+    return render(request, "examseddion.html",context=context)
+
+
+# @login_required(login_url="/login/")
+# def addexam(request):
+#     building = request.GET.get("building", None)
+#     rooms = None
+#     if building:
+#         rooms = Room.objects.filter(
+#             building_name__building_name=building, isOccupied=False
+#         )
+#     invigilator_query = Invigilator.objects.filter(isAssigned=False)
+#     building_query = Building.objects.all()
+#     return render(request, "addexam.html", locals())
+
+
+# @login_required(login_url="/login/")
+# def get_rooms(request):
+#     building = request.GET.get("building", None)
+#     rooms = Room.objects.filter(building_name__building_name=building, isOccupied=False)
+#     return render(request, "dropdown_list_opions.html", {"rooms": rooms})
+#     # return JsonResponse(list(rooms.values()), safe=False)
+
+
+# @login_required(login_url="/login/")
+# def addinvigilator(request):
+#     if request.method == "POST":
+#         Invigilator_firstname = request.POST.get("first_name")
+#         Invigilator_lastname = request.POST.get("last_name")
+#         Invigilator_age = request.POST.get("age")
+#         Invigilator_address = request.POST.get("address")
+#         Invigilator_phone_number = request.POST.get("phone_number")
+#         Invigilator_gender = request.POST.get("gender")
+#         Invigilator_email = request.POST.get("email")
+#         Invigilator.objects.create(
+#             Invigilator_firstname=Invigilator_firstname,
+#             Invigilator_lastname=Invigilator_lastname,
+#             Invigilator_gender=Invigilator_gender,
+#             Invigilator_address=Invigilator_address,
+#             Invigilator_email=Invigilator_email,
+#             Invigilator_phone_number=Invigilator_phone_number,
+#             Invigilator_age=Invigilator_age,
+#         )
+
+#     return render(request, "addinvigilator.html")

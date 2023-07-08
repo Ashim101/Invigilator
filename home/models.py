@@ -44,8 +44,9 @@ class Invigilator(models.Model):
 
     def __str__(self):
         return self.firstname + " " + self.lastname
-
-
+    @property
+    def fullname(self):
+        return f"{self.firstname} {self.lastname}"
 class Exam(models.Model):
     name = models.CharField(max_length=255)
     semester_type = models.CharField(max_length=50)
