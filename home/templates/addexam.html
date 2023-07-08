@@ -46,12 +46,6 @@
       </div>
     </div>
 
-    {% comment %} <div class="mb-3">
-      <label for="examcentre" class="form-label">Exam Centre</label>
-      <input type="text" required class="form-control" id="examcentre" name="examcentre"
-        placeholder="Enter exam centre">
-    </div> {% endcomment %}
-
     <div class="mb-3">
       <label for="examdate" class="form-label">Exam Date</label>
       <input type="date" min="" required class="form-control" id="examdate" name="examdate">
@@ -117,14 +111,18 @@
 
 
 <script>
-
-  function populate(){
-        building=document.getElementById('building_name').value;
-        window.location="/addexam/?building="+building;
-
-    
-  }
-
-
+  $("#building_name").change(function () {
+    var url = "http://localhost:8000/get-rooms/";  // get the url of the `load_cities` view
+    var buildingName = $(this).val();  // get the selected country ID from the HTML input
+    $.ajax({                       // initialize an AJAX request
+      url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+      data: {
+        'building': buildingName       // add the country id to the GET parameters
+      },
+      success: function (data) {   // `data` is the return of the `load_cities` view function
+        $("#Room").html(data);  // replace the contents of the city input with the data that came from the server
+      }
+    });
+  });
 </script>
 {% endblock %}

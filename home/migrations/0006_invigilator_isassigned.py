@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('home', '0005_alter_room_options_room_isoccupied_and_more'),
+        ("home", "0005_alter_room_options_room_isoccupied_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='invigilator',
-            name='isAssigned',
+            model_name="invigilator",
+            name="isAssigned",
             field=models.BooleanField(default=False),
         ),
     ]
