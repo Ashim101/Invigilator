@@ -34,6 +34,8 @@ urlpatterns = [
     path('summernote/', include('django_summernote.urls')),
     # path("get-rooms/", get_rooms, name="get_rooms"),
     path("invigilators/", invigilators, name="invigillators"),
+    path("examhallsessions/", examhallsessions, name="examhallsessions"),
+
 ]
 
 if settings.DEBUG:

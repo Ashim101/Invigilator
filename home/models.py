@@ -31,6 +31,8 @@ class Room(models.Model):
 
     def __str__(self):
         return self.building.name + " building room " + self.room_number
+    def is_occupied(self, date, shift):
+        return ExamHallSession.objects.filter(room=self, date=date, shift=shift).exists()
 
     class Meta:
         unique_together = ["building", "room_number"]
@@ -62,17 +64,31 @@ class Invigilator(models.Model):
 
  
 class Exam(models.Model):
+    
+    class Semester_typeChoice(models.TextChoices):
+        ODD = "Odd", "odd"
+        EVEN = "Even", "Even"
+    
+    class regular_or_backChoice(models.TextChoices):
+        REGULAR = "Regular", "Regular"
+        BACK = "Back", "Back"
+    class ShiftChoice(models.TextChoices):
+        MORNING = "Morning", "Morning"
+        DAY = "Day", "Day"
     name = models.CharField(max_length=255)
-    semester_type = models.CharField(max_length=50)
-    regular_or_back = models.CharField(max_length=50)
+    semester_type = models.CharField(max_length=50,choices=Semester_typeChoice.choices,default=Semester_typeChoice.ODD.value)
+    regular_or_back = models.CharField(max_length=50,choices=regular_or_backChoice.choices,default=regular_or_backChoice.REGULAR.value)
 
     date = models.DateField()
-    shift = models.CharField(max_length=255)
+    shift = models.CharField(max_length=255,choices=ShiftChoice.choices, default=ShiftChoice.DAY.value)
     start_time = models.TimeField()
     end_time = models.TimeField()
     
+    def is_managed(self, date, shift):
+       return ExamHallSession.objects.filter(exam=self, date=date, shift=shift).exists()
+    
     def __str__(self) -> str:
-        return self.name
+        return self.name + self.semester_type + self.regular_or_back
 
 class ExamHallSession(models.Model):
     room = models.ForeignKey(

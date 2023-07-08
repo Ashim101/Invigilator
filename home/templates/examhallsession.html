@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-primary" role="alert">
+  <h3>{{message}}</h3>
+</div>
+{% endfor%}
+{% endif %}
+
+
+{% load crispy_forms_tags %}
+<form action="/examhallsessions/" method="POST">
+  <input type="hidden" name="csrfmiddlewaretoken"
+    value="J15vXOLWkQDaWLpw0gQpLyrNhi8WnGHA3kYUL1GyFHEjjmhFhnFVng6h0vEoTPQy">
+
+
+
+  <div id="div_id_room" class="mb-3"> <label for="id_room" class="form-label requiredField">
+      Room<span class="asteriskField">*</span> </label> <select name="room" class="select form-select" required
+      id="id_room">
+      <option value="" selected>---------</option>
+      <option value="9">BCT building room 1</option>
+      <option value="8">BCT building room 22</option>
+      <option value="2">Civil building room 22</option>
+      <option value="5">ICTC building room 501</option>
+      <option value="6">ICTC building room 502</option>
+      <option value="7">ICTC building room 503</option>
+      <option value="1">library building room A1</option>
+      <option value="3">library building room A2</option>
+      <option value="4">library building room A3</option>
+
+    </select> </div>
+  <div id="div_id_exams" class="mb-3"> <label for="id_exams" class="form-label requiredField">
+      Exams<span class="asteriskField">*</span> </label> <select name="exams" class="selectmultiple form-select"
+      required id="id_exams" multiple>
+      <option value="1" selected>Maths IIIIRegular</option>
+      <option value="2">Software EgineeringOddRegular</option>
+      <option value="3">bachelorOddRegular</option>
+
+    </select> </div>
+  <div id="div_id_invigilators" class="mb-3"> <label for="id_invigilators" class="form-label requiredField">
+      Invigilators<span class="asteriskField">*</span> </label> <select name="invigilators"
+      class="selectmultiple form-select" required id="id_invigilators" multiple>
+      <option value="1" selected>Ashim Sapkota</option>
+
+    </select> </div>
+  <div id="div_id_shift" class="mb-3"> <label for="id_shift" class="form-label requiredField">
+      Shift<span class="asteriskField">*</span> </label> <input type="text" name="shift" maxlength="255"
+      class="textinput form-control" required id="id_shift"> </div>
+  <div id="div_id_date" class="mb-3"> <label for="id_date" class="form-label requiredField">
+      Date<span class="asteriskField">*</span> </label> <input type="date" name="date" class="dateinput form-control"
+      required id="id_date"> </div>
+
+  <input type="submit" class="btn btn-success" value="Create Room">
+</form>
+
+<table class="table" id=""shift>
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">exam</th>
+      <th scope="col">room</th>
+      <th scope="col">shift</th>
+      <th scope="col">date</th>
+      <th scope="col">invigilators</th>
+
+
+
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for examhallsession in examhallsessions %}
+    <tr>
+      <th scope="row">{{forloop.counter}}</th>
+      <td>{{examhallsession.exams.name}}</td>
+      <td>{{examhallsession.room.building }} room no {{examhallsession.room.room_number}}</td>
+      <td>{{examhallsession.shift}}</td>
+      <td>{{examhallsession.room.date}}</td>
+      <td>
+        <ul>
+          { % for exam in {{examhallsession.exams}} %}
+          <li>{{exam.name }} {{exam.semester_type}}</li>
+        </ul>
+      </td>
+
+      {% comment %} {% endfor %} {% endcomment %}
+
+
+      <th scope="col">shift</th>
+
+      <td><span class="material-symbols-outlined">
+          edit
+        </span>
+        <span class="material-symbols-outlined">
+          delete
+        </span>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<script>
+  $("#shift").change(function () {
+    var url = "http://localhost:8000/get-data/";  // get the url of the `load_cities` view
+    var buildingName = $(this).val();  // get the selected country ID from the HTML input
+    $.ajax({                       // initialize an AJAX request
+      url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+      data: {
+        'building': buildingName       // add the country id to the GET parameters
+      },
+      success: function (data) {   // `data` is the return of the `load_cities` view function
+        $("#Room").html(data);  // replace the contents of the city input with the data that came from the server
+      }
+    });
+  });
+</script>
+
+{% endblock %}

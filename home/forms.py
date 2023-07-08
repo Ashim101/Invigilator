@@ -1,5 +1,5 @@
 from django import forms
-from .models import Building, Room, Invigilator, Exam
+from .models import Building, Room, Invigilator, Exam,ExamHallSession
 
 class BuildingForm(forms.ModelForm):
     class Meta:
@@ -22,4 +22,8 @@ class InvigilatorForm(forms.ModelForm):
 class ExamForm(forms.ModelForm):
     class Meta:
         model=Exam
+        fields="__all__"
+class ExamHallSessionForm(forms.ModelForm):
+    class Meta:
+        model=ExamHallSession
         fields="__all__"

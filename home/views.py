@@ -8,8 +8,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 from home.models import *
-from .forms import BuildingForm, RoomForm, InvigilatorForm, ExamForm
-
+from .forms import BuildingForm, RoomForm, InvigilatorForm, ExamForm,ExamHallSessionForm
 
 # Create your views here.
 @login_required(login_url="/login/")
@@ -98,7 +97,12 @@ def rooms(request):
     if request.method == "POST":
         form=RoomForm(request.POST)
         if form.is_valid():
-           form.save()
+            try:
+              form.save()
+            except:
+               messages.error(request,"This room is already in the list")   
+        else:
+            messages.error(request,"This room is already in the list")
     return render(request, "room.html",context=context)
 
 @login_required(login_url="/login/")
@@ -132,19 +136,19 @@ def invigilators(request):
     return render(request, "invigilator.html",context=context)
 
 @login_required(login_url="/login/")
-def examseddions(request):
-    form = examseddionForm()
-    queryset = examseddion.objects.all()
+def examhallsessions(request):
+    form = ExamHallSessionForm()
+    queryset = ExamHallSession.objects.all()
     context = {
         "form":form,
-        "examseddions":queryset
+        "Examsssions":queryset
     }
     if request.method == "POST":
-        form=examseddionForm(request.POST)
+        form=ExamHallSessionForm(request.POST)
         if form.is_valid():
            form.save()
 
-    return render(request, "examseddion.html",context=context)
+    return render(request, "examhallsession.html",context=context)
 
 
 # @login_required(login_url="/login/")

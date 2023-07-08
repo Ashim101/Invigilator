@@ -1,13 +1,48 @@
-
-    {% extends 'base.html' %}
-    {% block content %}
+{% extends 'base.html' %}
+{% block content %}
 
 
 {% load crispy_forms_tags %}
 <form action="/exams/" method="POST">
   {% csrf_token %}
+  <input type="hidden" name="csrfmiddlewaretoken"
+    value="A1c1YkheGqaMWKQMmzohjyCBLEM64pDJUk5qMxcQ1hbVjlIVDGdNVgh5uRiyAyMH">
 
-  {{form|crispy}}
+
+
+  <div id="div_id_name" class="mb-3"> <label for="id_name" class="form-label requiredField">
+      Name<span class="asteriskField">*</span> </label> <input type="text" name="name" maxlength="255"
+      class="textinput form-control" required id="id_name"> </div>
+  <div id="div_id_semester_type" class="mb-3"> <label for="id_semester_type" class="form-label requiredField">
+      Semester type<span class="asteriskField">*</span> </label> <select name="semester_type" class="select form-select"
+      id="id_semester_type">
+      <option value="Odd" selected>odd</option>
+      <option value="Even">Even</option>
+
+    </select> </div>
+  <div id="div_id_regular_or_back" class="mb-3"> <label for="id_regular_or_back" class="form-label requiredField">
+      Regular or back<span class="asteriskField">*</span> </label> <select name="regular_or_back"
+      class="select form-select" id="id_regular_or_back">
+      <option value="Regular" selected>Regular</option>
+      <option value="Back">Back</option>
+
+    </select> </div>
+  <div id="div_id_date" class="mb-3"> <label for="id_date" class="form-label requiredField">
+      Date<span class="asteriskField">*</span> </label> <input type="date" name="date" class="dateinput form-control"
+      required id="id_date"> </div>
+  <div id="div_id_shift" class="mb-3"> <label for="id_shift" class="form-label requiredField">
+      Shift<span class="asteriskField">*</span> </label> <select name="shift" class="select form-select" id="id_shift">
+      <option value="Morning">Morning</option>
+      <option value="Day" selected>Day</option>
+
+    </select> </div>
+  <div id="div_id_start_time" class="mb-3"> <label for="id_start_time" class="form-label requiredField">
+      Start time<span class="asteriskField">*</span> </label> <input type="time" name="start_time"
+      class="timeinput form-control" required id="id_start_time"> </div>
+  <div id="div_id_end_time" class="mb-3"> <label for="id_end_time" class="form-label requiredField">
+      End time<span class="asteriskField">*</span> </label> <input type="time" name="end_time"
+      class="timeinput form-control" required id="id_end_time"> </div>
+
   <input type="submit" class="btn btn-success" value="Create Exam">
 </form>
 
@@ -37,11 +72,12 @@
       <td>{{exam.end_time}}</td>
 
       <td><span class="material-symbols-outlined">
-        edit
+          edit
         </span>
         <span class="material-symbols-outlined">
           delete
-          </span></td>
+        </span>
+      </td>
     </tr>
     {% endfor %}
   </tbody>
