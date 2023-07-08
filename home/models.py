@@ -6,13 +6,22 @@ class Building(models.Model):
     def __str__(self):
         return self.name
 
+class Notice(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    published_date = models.DateTimeField()
+    
+    def __str__(self) -> str:
+        return self.title
 
 class Faculty(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
-
+    
+    class Meta:
+        verbose_name_plural = "Faculties"
 
 class Room(models.Model):
     building = models.ForeignKey(
@@ -47,6 +56,11 @@ class Invigilator(models.Model):
     @property
     def fullname(self):
         return f"{self.firstname} {self.lastname}"
+ 
+    def is_assigned(self, date, shift):
+        return ExamHallSession.objects.filter(invigilators=self, date=date, shift=shift).exists()
+
+ 
 class Exam(models.Model):
     name = models.CharField(max_length=255)
     semester_type = models.CharField(max_length=50)
@@ -56,21 +70,23 @@ class Exam(models.Model):
     shift = models.CharField(max_length=255)
     start_time = models.TimeField()
     end_time = models.TimeField()
-
+    
+    def __str__(self) -> str:
+        return self.name
 
 class ExamHallSession(models.Model):
     room = models.ForeignKey(
-        Room, on_delete=models.CASCADE, related_name="exams", null=True, blank=True
+        Room, on_delete=models.CASCADE, related_name="exams"
     )
     exams = models.ManyToManyField(Exam)
-    invigilator = models.ManyToManyField(Invigilator)    
+    invigilators = models.ManyToManyField(Invigilator)
 
     shift = models.CharField(max_length=255)
     date = models.DateField()
 
     def name(args):
         def __str__(self):
-            return self.examination_name
+            return self.room
 
     class Meta:
         unique_together = ["room", "shift", "date"]

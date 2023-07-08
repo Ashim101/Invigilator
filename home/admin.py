@@ -1,12 +1,18 @@
 from django.contrib import admin
+from django_summernote.admin import SummernoteModelAdmin
 
 from .models import *
+
+
+class RoomInline(admin.TabularInline):
+    model = Room
+    extra = 1
 
 @admin.register(Building)
 class BuildingAdmin(admin.ModelAdmin):
     list_display = ["id", "name"]
     search_fields = ["name"]
-
+    inlines = [RoomInline,]
 
 @admin.register(Faculty)
 class FacultyAdmin(admin.ModelAdmin):
@@ -37,4 +43,11 @@ class ExamAdmin(admin.ModelAdmin):
 class ExamHallSessionAdmin(admin.ModelAdmin):
     list_display = ["id", "room","shift","date"]
     list_filter=["room","shift"]
+    filter_horizontal = ["exams", "invigilators"]
 
+
+@admin.register(Notice)
+class NoticeAdmin(SummernoteModelAdmin, admin.ModelAdmin):
+    list_display = ["id", "title", "published_date"]
+    search_fields = ["title"]
+    summernote_fields = '__all__'
