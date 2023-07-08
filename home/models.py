@@ -1,63 +1,75 @@
 from django.db import models
 
-# Create your models here.
-
-
 class Building(models.Model):
-    building_name = models.CharField(max_length=225, blank=True, null=True)
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
-        return self.building_name
+        return self.name
+
+
+class Faculty(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Room(models.Model):
-    building_name = models.ForeignKey(
+    building = models.ForeignKey(
         Building, on_delete=models.CASCADE, related_name="rooms"
     )
     room_number = models.CharField(max_length=30)
-    isOccupied = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.building_name.building_name + " building room " + self.room_number
+        return self.building.name + " building room " + self.room_number
 
     class Meta:
-        unique_together = ["building_name", "room_number"]
-        ordering = ["building_name__building_name"]
+        unique_together = ["building", "room_number"]
+        ordering = ["building__name"]
 
 
 class Invigilator(models.Model):
-    Invigilator_firstname = models.CharField(max_length=225, blank=True, null=True)
-    Invigilator_lastname = models.CharField(max_length=225, blank=True, null=True)
-    Invigilator_email = models.EmailField(blank=True, null=True)
-    Invigilator_age = models.IntegerField(blank=True, null=True)
-    Invigilator_gender = models.CharField(max_length=20, blank=True, null=True)
-    Invigilator_address = models.CharField(max_length=225, blank=True, null=True)
-    Invigilator_phone_number = models.CharField(max_length=225, blank=True, null=True)
-    isAssigned = models.BooleanField(default=False)
+    class GenderChoice(models.TextChoices):
+        MALE = "male", "male"
+        FEMALE = "female", "female"
+        OTHERS = "others", "others"
+    
+    firstname = models.CharField(max_length=255)
+    lastname = models.CharField(max_length=255, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    age = models.IntegerField(blank=True, null=True)
+    gender = models.CharField(max_length=7, choices=GenderChoice.choices, default=GenderChoice.MALE.value)
+    address = models.CharField(max_length=255, blank=True, null=True)
+    phone_number = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return self.Invigilator_firstname + " " + self.Invigilator_lastname
+        return self.firstname + " " + self.lastname
 
 
 class Exam(models.Model):
-    examination_name = models.CharField(max_length=255, null=True, blank=True)
-    examination_type = models.CharField(max_length=50, null=True, blank=True)
-    semester_type = models.CharField(max_length=50, null=True, blank=True)
-    regular_or_back = models.CharField(max_length=50, null=True, blank=True)
-    building = models.ForeignKey(
-        Building, on_delete=models.CASCADE, related_name="exams", null=True, blank=True
-    )
+    name = models.CharField(max_length=255)
+    semester_type = models.CharField(max_length=50)
+    regular_or_back = models.CharField(max_length=50)
+
+    date = models.DateField()
+    shift = models.CharField(max_length=255)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+
+class ExamHallSession(models.Model):
     room = models.ForeignKey(
         Room, on_delete=models.CASCADE, related_name="exams", null=True, blank=True
     )
-    invigilator = models.ManyToManyField(Invigilator)
-    date = models.DateField(null=True, blank=True)
-    start_time = models.TimeField(null=True, blank=True)
-    end_time = models.TimeField(null=True, blank=True)
+    exams = models.ManyToManyField(Exam)
+    invigilator = models.ManyToManyField(Invigilator)    
+
+    shift = models.CharField(max_length=255)
+    date = models.DateField()
 
     def name(args):
         def __str__(self):
             return self.examination_name
 
     class Meta:
-        unique_together = ["room", "start_time"]
+        unique_together = ["room", "shift", "date"]
