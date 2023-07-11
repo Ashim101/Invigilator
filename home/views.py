@@ -22,7 +22,6 @@ def home(request):
         
     )
 
-
 def register(request):
     form = UserCreationForm(request.POST or None)
     if form.is_valid():
