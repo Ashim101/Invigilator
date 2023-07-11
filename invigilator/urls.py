@@ -32,9 +32,23 @@ urlpatterns = [
     path("exams/", exams, name="exams"),
     path("buildings/", buildings, name="buildings"),
     path('summernote/', include('django_summernote.urls')),
-    # path("get-rooms/", get_rooms, name="get_rooms"),
+    path("get-data/", get_data, name="get_data"),
     path("invigilators/", invigilators, name="invigillators"),
     path("examhallsessions/", examhallsessions, name="examhallsessions"),
+    path("updateroom/<slug>/",update_room, name="update"),
+    path("updatebuilding/<slug>/",update_building, name="update"),
+    path("updateexam/<slug>/",update_exam, name="update"),
+    path("updateinvigilator/<slug>/",update_invigilator, name="updateinvigilator"),
+    path("updateexamhallsession/<slug>/",update_examhallsession, name="updateexamhallsession"),
+    path("deleteroom/<slug>/",delete_room, name="deleteroom"),
+    path("deleteexam/<slug>/",delete_exam, name="deleteexam"),
+
+
+
+
+
+
+
 
 ]
 
