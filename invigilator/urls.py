@@ -28,13 +28,6 @@ urlpatterns = [
     path("deleteroom/<slug>/",delete_room, name="deleteroom"),
     path("deleteexam/<slug>/",delete_exam, name="deleteexam"),
 
-
-
-
-
-
-
-
 ]
 
 if settings.DEBUG:

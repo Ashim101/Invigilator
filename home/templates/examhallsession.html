@@ -108,7 +108,6 @@
       data: { 'date': date, 'shift': selectedOption },
       dataType: 'json',
       success: function (data) {
-        // Update the dependent dropdowns with new options
         exams = data.exams
         invigilators = data.invigilators
         rooms = data.rooms
@@ -128,7 +127,6 @@
     var dropdown = $(dropdownId);
     dropdown.empty();
     console.log(options)
-    // Add the new options to the dropdown
     $.each(options, function (index, option) {
       dropdown.append($('<option></option>').val(option.id).text(option.name));
     });

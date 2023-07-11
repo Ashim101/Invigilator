@@ -3,11 +3,10 @@ from django.db.models import Q
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm,UserCreationForm
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import  login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from django.core import serializers
 from django.http import JsonResponse,HttpResponseRedirect
 from django.shortcuts import redirect, render
 
@@ -56,36 +55,13 @@ def login_page(request):
                 "message": "Not the vaild credentials"
             })
     return render(request,"signin.html")
-    #     username = request.POST.get("username")
-    #     password = request.POST.get("password")
-    #     print(username + password)
-    #     user = authenticate(username=username, password=password)
-    #     if user is None:
-    #         messages.error(request, "User doesnot exists")
-    #     else:
-    #         login(request, user)
-    #         return redirect("/home")
-    # return render(request, "signin.html")
+
 
 
 def logout_page(request):
     logout(request)
     return HttpResponseRedirect(reverse("login"))
 
-
-# @login_required(login_url="/login/")
-# def addroom(request):
-#     if request.method == "POST":
-#         building_name = request.POST.get("building_name")
-#         building = Building.objects.filter(building_name=building_name)
-#         room_number = request.POST.get("room_number")
-#         try:
-#             Room.objects.create(building_name=building.first(), room_number=room_number)
-#         except:
-#             messages.error(request, "This room is already in the list {}")
-#     queryset = Building.objects.all()
-#     addedrooms = Room.objects.all()
-#     return render(request, "addroom.html", {"queryset": queryset, "Rooms": addedrooms})
 
 
 @login_required(login_url="/login/")
