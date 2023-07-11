@@ -346,13 +346,10 @@ def update_invigilator(request,slug):
             messages.error(request,"This invigilator is already in the list")
 
         
-        form = InvigilatorForm()
-        invigilator_qs = Invigilator.objects.all()
-        context = {
-        "form":form,
-        "invigilators":invigilator_qs
-        }
-        return render(request, "updateinvigilator.html",context=context)
+        return redirect("/invigilators/")
+
+    return render(request, "updateinvigilator.html",{"form":form})
+    
 
 
 
@@ -370,15 +367,20 @@ def update_examhallsession(request,slug):
                messages.error(request,"This examhallsession is already in the list")   
         else:
             messages.error(request,"This examhallsession is already in the list")
+            
+        return redirect("/examhallsessions/")
 
         
-        form = ExamHallSessionForm()
-        examhallsession_qs = ExamHallSession.objects.all()
-        context = {
-        "form":form,
-        "examhallsessions":examhallsession_qs
-        }
-        return render(request, "updateexamhallsession.html",context=context)
+        # form = ExamHallSessionForm()
+        # examhallsession_qs = ExamHallSession.objects.all()
+        # context = {
+        # "form":form,
+        # "examhallsessions":examhallsession_qs
+        # }
+        
+        
+        
+    return render(request, "updateexamhallsession.html",{"form":form})
 
 
 def delete_room(request,slug):
@@ -397,10 +399,6 @@ def delete_room(request,slug):
 
 def delete_building(request,slug):
     Building.objects.get(slug=slug).delete()
-    
-
-
-        
     form = BuildingForm()
     building_qs = Building.objects.all()
     context = {
@@ -423,3 +421,11 @@ def delete_exam(request,slug):
     "exams":exam_qs
     }
     return render(request, "exam.html",context=context)
+
+def delete_invigilator(request,slug):
+    Invigilator.objects.get(slug=slug).delete()
+    return redirect("/invigilators/")
+
+def delete_examhallsession(request,slug):
+    ExamHallSession.objects.get(slug=slug).delete()
+    return redirect("/examhallsessions/")

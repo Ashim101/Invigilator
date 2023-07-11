@@ -1,0 +1,14 @@
+
+{% extends 'base.html' %}
+{% block content %}
+
+
+{% load crispy_forms_tags %}
+<form  method="POST">
+{% csrf_token %}
+
+{{form|crispy}}
+<input type="submit" class="btn btn-success" value="Update Invigilator">
+</form>
+<hr>
+{% endblock %}
