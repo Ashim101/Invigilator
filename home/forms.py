@@ -27,3 +27,5 @@ class ExamHallSessionForm(forms.ModelForm):
     class Meta:
         model=ExamHallSession
         fields="__all__"
+        
+#

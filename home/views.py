@@ -1,11 +1,14 @@
 import json
 from django.db.models import Q
+from django.urls import reverse
 from django.contrib import messages
+from django.contrib.auth.forms import AuthenticationForm,UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.core import serializers
+from django.http import JsonResponse,HttpResponseRedirect
 from django.shortcuts import redirect, render
 
 
@@ -15,46 +18,55 @@ from .forms import BuildingForm, RoomForm, InvigilatorForm, ExamForm,ExamHallSes
 # Create your views here.
 @login_required(login_url="/login/")
 def home(request):
-    return render(request, "home.html")
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("signin"))
+    return render(request,"home.html",{
+        "variable": request.user
+    }
+        
+    )
 
 
 def register(request):
-    if request.method == "POST":
-        first_name = request.POST.get("first_name")
-        last_name = request.POST.get("last_name")
-        username = request.POST.get("username")
-        exist = User.objects.filter(username=username)
-        if exist.exists():
-            messages.error(request, "username already exists")
-            return redirect("/register/")
-        user = User.objects.create(
-            first_name=first_name, last_name=last_name, username=username
-        )
-        user.set_password(request.POST.get("password1"))
-        user.save()
-        messages.info(request, "Account created successfully")
-
-        return redirect("/register/")
-    return render(request, "signup.html")
+    form = UserCreationForm(request.POST or None)
+    if form.is_valid():
+        user_obj=form.save()
+        return HttpResponseRedirect(reverse("login"))
+    return render(request,"signup.html",{
+        "form":form,
+    })
+        
+    
+ 
 
 
 def login_page(request):
     if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        print(username + password)
-        user = authenticate(username=username, password=password)
-        if user is None:
-            messages.error(request, "User doesnot exists")
+        form=AuthenticationForm(request,data=request.POST)
+        if form.is_valid():
+            user=form.get_user()
+            login(request,user)
+            return HttpResponseRedirect(reverse("home"))
         else:
-            login(request, user)
-            return redirect("/home")
-    return render(request, "signin.html")
+            return render(request, "signin.html",{
+                "message": "Not the vaild credentials"
+            })
+    return render(request,"signin.html")
+    #     username = request.POST.get("username")
+    #     password = request.POST.get("password")
+    #     print(username + password)
+    #     user = authenticate(username=username, password=password)
+    #     if user is None:
+    #         messages.error(request, "User doesnot exists")
+    #     else:
+    #         login(request, user)
+    #         return redirect("/home")
+    # return render(request, "signin.html")
 
 
 def logout_page(request):
     logout(request)
-    return redirect("/login")
+    return HttpResponseRedirect(reverse("login"))
 
 
 # @login_required(login_url="/login/")
