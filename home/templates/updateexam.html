@@ -3,7 +3,7 @@
 
 
 {% load crispy_forms_tags %}
-<form action="/exams/" method="POST">
+<form  method="POST">
   {% csrf_token %}
 
   {% comment %} <input type="hidden" name="csrfmiddlewaretoken"
@@ -44,59 +44,7 @@
       End time<span class="asteriskField">*</span> </label> <input type="time" name="end_time"
       class="timeinput form-control" required id="id_end_time"> </div>
 
-  <input type="submit" class="btn btn-success" value="Create Exam">
+  <input type="submit" class="btn btn-success" value="Update Exam">
 </form>
-<hr>
-
-<form class="d-flex mb-5 mt-5 mx-auto justify-content-center align-items-center" role="search">
-  <input class="form-control me-2 w-25" type="search" name = "search" placeholder="Search" aria-label="Search">
-  <button class="btn btn-outline-success " type="submit">Search</button>
-</form>
-<div class="d-flex flex-column justify-content-center align-items-center ">
-  <h3>List of all the exams</h3>
-</div>
-<hr>
-
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Name</th>
-      <th scope="col">Semester</th>
-      <th scope="col">Exam Type</th>
-      <th scope="col">date</th>
-      <th scope="col">shift</th>
-      <th scope="col">Start Time</th>
-      <th scope="col">End Time</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for exam in exams %}
-    <tr>
-      <th scope="row">{{forloop.counter}}</th>
-      <td>{{exam.name}}</td>
-      <td>{{exam.semester_type}}</td>
-      <td>{{exam.regular_or_back}}</td>
-      <td>{{exam.date}}</td>
-      <td>{{exam.shift}}</td>
-      <td>{{exam.start_time}}</td>
-      <td>{{exam.end_time}}</td>
-
-      <td>
-        <a href="/updateexam/{{exam.slug}}" class="text-decoration-none"><span class="material-symbols-outlined">
-          edit
-          </span>
-        </a>
-        <a href="/deleteexam/{{exam.slug}}" class="text-decoration-none">
-          <span class="material-symbols-outlined">
-            delete
-            </span>
-          </a>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
 
 {% endblock %}

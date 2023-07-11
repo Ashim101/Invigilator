@@ -24,7 +24,7 @@
       
                       <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Register</p>
       
-                      <form action="{%url "register"%}" class="mx-1 mx-md-4" method="POST">
+                      <form action="{% url "register"%}" class="mx-1 mx-md-4" method="POST">
                         {% csrf_token %}
 
                           <div class="d-flex flex-row align-items-center mb-4">

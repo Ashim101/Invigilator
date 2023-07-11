@@ -15,6 +15,16 @@
   </div>
 
   </form>
+  <hr>
+
+  <form class="d-flex mb-5 mt-5 mx-auto justify-content-center align-items-center" role="search">
+    <input class="form-control me-2 w-25" type="search" name = "search" placeholder="Search" aria-label="Search">
+    <button class="btn btn-outline-success " type="submit">Search</button>
+  </form>
+  <div class="d-flex flex-column justify-content-center align-items-center ">
+    <h3>List of all the buildings</h3>
+  </div>
+  <hr>
 <table class="table">
   <thead>
     <tr>
@@ -28,12 +38,16 @@
     <tr>
       <th scope="row">{{forloop.counter}}</th>
       <td>{{building.name}}</td>
-      <td><span class="material-symbols-outlined">
-          edit
+      <td> 
+      <a href="/updatebuilding/{{building.slug}}" class="text-decoration-none"><span class="material-symbols-outlined">
+        edit
         </span>
+      </a>
+      <a href="/deletebuilding/{{building.slug}}" class="text-decoration-none">
         <span class="material-symbols-outlined">
           delete
-        </span>
+          </span>
+        </a>
       </td>
     </tr>
     {% endfor %}
