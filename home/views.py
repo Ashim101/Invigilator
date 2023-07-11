@@ -30,8 +30,12 @@ def home(request):
 def register(request):
     form = UserCreationForm(request.POST or None)
     if form.is_valid():
-        user_obj=form.save()
+        form.save()
+        messages.success(request,"Account created successfully")
         return HttpResponseRedirect(reverse("login"))
+    else:
+        messages.error(request,"Account not created! please try again")
+        
     return render(request,"signup.html",{
         "form":form,
     })
