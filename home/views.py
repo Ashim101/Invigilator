@@ -234,89 +234,31 @@ def examhallsessions(request):
     return render(request, "examhallsession.html",context=context)
 
 
-# @login_required(login_url="/login/")
-# def addexam(request):
-#     building = request.GET.get("building", None)
-#     rooms = None
-#     if building:
-#         rooms = Room.objects.filter(
-#             building_name__building_name=building, isOccupied=False
-#         )
-#     invigilator_query = Invigilator.objects.filter(isAssigned=False)
-#     building_query = Building.objects.all()
-#     return render(request, "addexam.html", locals())
-
-
 @login_required(login_url="/login/")
 def get_data(request):
     date = request.GET.get('date')
     shift = request.GET.get('shift')
     
-    # Perform necessary logic based on the selected option
-    # Generate the updated options for the dependent dropdowns
-    # exams = Exam.objects.filter( ~Q(Exam.is_managed(self,date,shift)))    
 
-    # examsession=examhallsessions.objects.filter(date=date,shift=shift)
-    # exams=examsession.exams.all().values_list("exams__id")
-    
-    
-    
-    
-           
-    
-    exams=Exam.get_unmanaged_exams(date=date,shift=shift)
-    invigilators=Invigilator.get_available_invigilator(date=date,shift=shift)
-    rooms=Room.get_available_rooms(date=date,shift=shift)
-    rooms = [{"name": f' {room.building} building room {room.room_number}'} for room in rooms]
-    invigilators = [{"name": f' {invigilator.fullname} {invigilator.gender}  {invigilator.age} semester'} for invigilator in invigilators]
-    
+    from django.db.models import F
+    exams=Exam.get_unmanaged_exams(date=date,shift=shift).values("id", "name")
+    invigilators=Invigilator.get_available_invigilator(date=date,shift=shift).annotate(name=F("firstname")).values("id", "name")
+    rooms=Room.get_available_rooms(date=date,shift=shift).annotate(name=F("room_number")).values("id", "name")
+
+    context = {
+        "exams": list(exams),
+        "invigilators": list(invigilators),
+        "rooms": list(rooms)
+    }
     
 
     
 
-    # exams = Exam.objects.filter( ~Q(examhallsession__date=date, examhallsession__shift=shift))    
-    exams = [{"name": f' {exam.regular_or_back} {exam.name}  {exam.semester_type} semester'} for exam in exams]
-    print(exams)
-    print(invigilators)
-    print(rooms)
 
-    return JsonResponse({"exams":exams,"invigilators":invigilators,"rooms":rooms}, safe=False)
+    return JsonResponse(context, safe=False)
 
     
-    # options1 = [{'value': 'option1', 'label': 'Option 1'}, {'value': 'option2', 'label': 'Option 2'}]
-    # options2 = [{'value': 'option3', 'label': 'Option 3'}, {'value': 'option4', 'label': 'Option 4'}]
-    
-    # data = {
-    #     'options1': options1,
-    #     'options2': options2,
 
-    # }
-    
-    # return JsonResponse(data)
-    # return JsonResponse(list(rooms.values()), safe=False)
-
-
-# @login_required(login_url="/login/")
-# def addinvigilator(request):
-#     if request.method == "POST":
-#         Invigilator_firstname = request.POST.get("first_name")
-#         Invigilator_lastname = request.POST.get("last_name")
-#         Invigilator_age = request.POST.get("age")
-#         Invigilator_address = request.POST.get("address")
-#         Invigilator_phone_number = request.POST.get("phone_number")
-#         Invigilator_gender = request.POST.get("gender")
-#         Invigilator_email = request.POST.get("email")
-#         Invigilator.objects.create(
-#             Invigilator_firstname=Invigilator_firstname,
-#             Invigilator_lastname=Invigilator_lastname,
-#             Invigilator_gender=Invigilator_gender,
-#             Invigilator_address=Invigilator_address,
-#             Invigilator_email=Invigilator_email,
-#             Invigilator_phone_number=Invigilator_phone_number,
-#             Invigilator_age=Invigilator_age,
-#         )
-
-#     return render(request, "addinvigilator.html")
 
 def update_room(request,slug):
     form = RoomForm(instance=Room.objects.get(slug=slug))

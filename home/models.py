@@ -1,5 +1,6 @@
 from django.db import models
 from autoslug import AutoSlugField
+from django.core import serializers
 
 
 class Building(models.Model):

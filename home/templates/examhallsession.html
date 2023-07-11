@@ -109,12 +109,12 @@
       dataType: 'json',
       success: function (data) {
         // Update the dependent dropdowns with new options
-        examnames = data.exams
+        exams = data.exams
         invigilators = data.invigilators
         rooms = data.rooms
         console.log("from ajax success");
         console.log(date);
-        updateDependentDropdown('#id_exams', examnames);
+        updateDependentDropdown('#id_exams', exams);
         updateDependentDropdown("#id_invigilators", invigilators);
         updateDependentDropdown("#id_room", rooms);
       },
@@ -127,9 +127,10 @@
   function updateDependentDropdown(dropdownId, options) {
     var dropdown = $(dropdownId);
     dropdown.empty();
+    console.log(options)
     // Add the new options to the dropdown
     $.each(options, function (index, option) {
-      dropdown.append($('<option></option>').val(option.name).text(option.name));
+      dropdown.append($('<option></option>').val(option.id).text(option.name));
     });
   }
 </script>
