@@ -43,8 +43,7 @@ class Room(models.Model):
     def get_available_rooms(date, shift):
         assigned_rooms= ExamHallSession.objects.filter(date=date, shift=shift).values('room')
         return Room.objects.all().exclude(id__in=assigned_rooms) 
-    # def is_occupied(self, date, shift):
-    #     return ExamHallSession.objects.filter(room=self, date=date, shift=shift).exists()
+ 
 
     class Meta:
         unique_together = ["building", "room_number"]
@@ -74,8 +73,7 @@ class Invigilator(models.Model):
     def fullname(self):
         return f"{self.firstname} {self.lastname}"
  
-    # def is_assigned(self, date, shift):
-    #     return ExamHallSession.objects.filter(invigilators=self, date=date, shift=shift).exists()
+
     @staticmethod
     def get_available_invigilator(date, shift):
         assigned_invigilators = ExamHallSession.objects.filter(date=date, shift=shift).values('invigilators')

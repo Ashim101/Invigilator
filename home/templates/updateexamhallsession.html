@@ -4,7 +4,7 @@
 {% block content %}
 
 {% load crispy_forms_tags %}
-<form action="/examhallsessions/" method="POST">
+<form  method="POST">
 
   <input type="hidden" name="csrfmiddlewaretoken"
     value="SAxVcmLc9wZwTAvFA8tXRIHBpyLc3FtmcTqk0zGOun0FgbnORfittqm58LhEzOCk">
@@ -40,63 +40,9 @@
       Date<span class="asteriskField">*</span> </label> <input type="date" name="date" class="dateinput form-control"
       required id="id_date"> </div> 
 
-  <input type="submit" class="btn btn-success" value="Create Examhallsession">
-<div class="d-flex flex-column justify-content-center align-items-center ">
-  <h3>List of all the exam sessions</h3>
-</div>
-<hr>
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Date</th>
-      <th scope="col">Shift</th>
-      <th scope="col">Exams</th>
-      <th scope="col">Invigilators</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for examhallsession in examhallsessions %}
-    <tr>
-      <th scope="row">{{forloop.counter}}</th>
-      <td>{{examhallsession.date}}</td>
-      <td>{{examhallsession.shift}}</td>
-      <td>
-        <ul>
-          {% for exams in examhallsession.exams.all %}
-          <li>
-            {{exams}}
-          </li>
-          {% endfor %}
-        </ul>
-      </td>
-      <td>
-        <ul>
-          {% for invigilators in examhallsession.invigilators.all %}
-          <li>
-            {{invigilators}}
-          </li>
-          {% endfor %}
-        </ul>
-      </td>
+  <input type="submit" class="btn btn-success" value="Update Examhallsession">
 
-      <td>
-        
-        <a href="/updateexamhallsession/{{examhallsession.slug}}" class="text-decoration-none"><span class="material-symbols-outlined">
-          edit
-          </span>
-        </a>
-        <a href="/deleteexamhallsession/{{examhallsession.slug}}" class="text-decoration-none">
-          <span class="material-symbols-outlined">
-            delete
-            </span>
-          </a>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   function updateDropdowns(selectedOption) {
     console.log('ajax called.');
