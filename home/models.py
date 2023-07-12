@@ -109,7 +109,7 @@ class Exam(models.Model):
         managed_exams = ExamHallSession.objects.filter(date=date, shift=shift).values('exams')
         return Exam.objects.filter(date=date, shift=shift).exclude(id__in=managed_exams)    
     def __str__(self) -> str:
-        return self.name + self.semester_type + self.regular_or_back
+        return self.name +" "+ self.semester_type +" "+ self.regular_or_back
 
 class ExamHallSession(models.Model):
     class ShiftChoice(models.TextChoices):

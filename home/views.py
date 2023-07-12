@@ -17,13 +17,8 @@ from .forms import BuildingForm, RoomForm, InvigilatorForm, ExamForm,ExamHallSes
 # Create your views here.
 @login_required(login_url="/login/")
 def home(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse("signin"))
-    return render(request,"home.html",{
-        "variable": request.user
-    }
-        
-    )
+    examhallsession_qs = ExamHallSession.objects.all()
+    return render(request,"home.html",{"examhallsessions":examhallsession_qs} )
 
 def register(request):
     form = UserCreationForm(request.POST or None)
@@ -184,11 +179,6 @@ def examhallsessions(request):
             Q(exams__name__icontains=search)|
             Q(invigilators__firstname__icontains=search)|
             Q(date__icontains=search)
-
-
-
-
-
             )
     context = {
         "form":form,
@@ -249,21 +239,11 @@ def update_room(request,slug):
                messages.error(request,"This room is already in the list")   
         else:
             messages.error(request,"This room is already in the list")
+        return redirect("/rooms/")
+    return render(request,"updateroom.html",{"form":form})
 
         
-        form = RoomForm()
-        room_qs = Room.objects.all()
-        context = {
-        "form":form,
-        "rooms":room_qs
-        }
-        return render(request, "room.html",context=context)
 
-        
-    context = {
-        "form":form,
-    }
-    return render(request, "updateroom.html",context=context)
 
 
 def update_building(request,slug):
@@ -280,21 +260,14 @@ def update_building(request,slug):
                messages.error(request,"This building  is already in the list")   
         else:
             messages.error(request,"This building is already in the list")
+        return redirect("/buildings/")
+    return render(request,"updatebuilding.html",{"form":form})
+
 
         
-        form = BuildingForm()
-        building_qs = Building.objects.all()
-        context = {
-        "form":form,
-        "buildings":building_qs
-        }
-        return render(request, "building.html",context=context)
 
         
-    context = {
-        "form":form,
-    }
-    return render(request, "updatebuilding.html",context=context)
+
 
 
 
@@ -312,19 +285,12 @@ def update_exam(request,slug):
                messages.error(request,"This updateexam is already in the list")   
         else:
             messages.error(request,"This updateexam is already in the list")
+        return redirect("/exams/")
+    return render(request,"updateexam.html",{"form":form})
 
         
-        form = ExamForm()
-        updateexam_qs = Exam.objects.all()
-        context = {
-        "form":form,
-        "exams":updateexam_qs
-        }
-        return render(request, "exam.html",context=context)
-    context = {
-    "form":form,
-    }
-    return render(request, "updateexam.html",context=context)
+  
+
     
 
 
@@ -368,59 +334,25 @@ def update_examhallsession(request,slug):
             messages.error(request,"This examhallsession is already in the list")
             
         return redirect("/examhallsessions/")
-
-        
-        # form = ExamHallSessionForm()
-        # examhallsession_qs = ExamHallSession.objects.all()
-        # context = {
-        # "form":form,
-        # "examhallsessions":examhallsession_qs
-        # }
-        
-        
-        
     return render(request, "updateexamhallsession.html",{"form":form})
 
 
 def delete_room(request,slug):
     Room.objects.get(slug=slug).delete()
     
+    return redirect("/rooms/")
 
-
-        
-    form = RoomForm()
-    room_qs = Room.objects.all()
-    context = {
-    "form":form,
-    "rooms":room_qs
-    }
-    return render(request, "room.html",context=context)
 
 def delete_building(request,slug):
     Building.objects.get(slug=slug).delete()
-    form = BuildingForm()
-    building_qs = Building.objects.all()
-    context = {
-    "form":form,
-    "buildings":building_qs
-    }
-    return render(request, "building.html",context=context)
+
+    return redirect("/rooms/")
+
 
 
 def delete_exam(request,slug):
     Exam.objects.get(slug=slug).delete()
-    
-
-
-        
-    form = ExamForm()
-    exam_qs = Exam.objects.all()
-    context = {
-    "form":form,
-    "exams":exam_qs
-    }
-    return render(request, "exam.html",context=context)
-
+    return redirect("/exams/")
 def delete_invigilator(request,slug):
     Invigilator.objects.get(slug=slug).delete()
     return redirect("/invigilators/")

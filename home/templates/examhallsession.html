@@ -52,7 +52,9 @@
       <th scope="col">Date</th>
       <th scope="col">Shift</th>
       <th scope="col">Exams</th>
+      <th scope="col">Room</th>
       <th scope="col">Invigilators</th>
+
     </tr>
   </thead>
   <tbody>
@@ -70,6 +72,8 @@
           {% endfor %}
         </ul>
       </td>
+      <td>{{examhallsession.room}}</td>
+
       <td>
         <ul>
           {% for invigilators in examhallsession.invigilators.all %}

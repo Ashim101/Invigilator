@@ -2,5 +2,47 @@
 
 {% block content %}
 
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Date</th>
+        <th scope="col">Shift</th>
+        <th scope="col">Exams</th>
+        <th scope="col">Room</th>
+        <th scope="col">Invigilators</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for examhallsession in examhallsessions %}
+      <tr>
+        <th scope="row">{{forloop.counter}}</th>
+        <td>{{examhallsession.date}}</td>
+        <td>{{examhallsession.shift}}</td>
+        <td>
+          <ul>
+            {% for exams in examhallsession.exams.all %}
+            <li>
+              {{exams.name}}  {{exams.semester_type}} semester {{exams.regular_or_back}}
+            </li>
+            {% endfor %}
+          </ul>
+        </td>
+        <td>{{examhallsession.room}}</td>
+
+        <td>
+          <ul>
+            {% for invigilators in examhallsession.invigilators.all %}
+            <li>
+              {{invigilators}}
+            </li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
 
 {% endblock %}
