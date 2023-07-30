@@ -1,4 +1,5 @@
 import json
+import csv
 from django.db.models import Q
 from django.urls import reverse
 from django.contrib import messages
@@ -12,7 +13,7 @@ from django.shortcuts import redirect, render
 
 
 from home.models import *
-from .forms import BuildingForm, RoomForm, InvigilatorForm, ExamForm,ExamHallSessionForm
+from .forms import BuildingForm, RoomForm, InvigilatorForm, ExamForm,ExamHallSessionForm,InvigilatorUploadForm
 
 # Create your views here.
 @login_required(login_url="/login/")
@@ -360,3 +361,25 @@ def delete_invigilator(request,slug):
 def delete_examhallsession(request,slug):
     ExamHallSession.objects.get(slug=slug).delete()
     return redirect("/examhallsessions/")
+
+def uploadcsv(request):
+    if request.method == 'POST':
+        form = InvigilatorUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_file = request.FILES['csv_file']
+
+            # Process the CSV file
+            decoded_file = csv_file.read().decode('utf-8')
+            csv_data = csv.reader(decoded_file.splitlines(), delimiter=',')
+            next(csv_data)  # Skip the header row if needed
+
+            for row in csv_data:
+                firstname, lastname = row
+                invigilator = Invigilator.objects.create(firstname=firstname, lastname=lastname)
+
+            return redirect("/invigilators/")  # Redirect to a page showing the list of invigilators
+
+    else:
+        form = InvigilatorUploadForm()
+
+    return render(request, 'addcsv.html', {'form': form})
