@@ -28,4 +28,5 @@ class ExamHallSessionForm(forms.ModelForm):
         model=ExamHallSession
         fields="__all__"
         
-#
+class InvigilatorUploadForm(forms.Form):
+    csv_file = forms.FileField()

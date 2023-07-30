@@ -30,6 +30,7 @@ urlpatterns = [
     path("deleteinvigilator/<slug>/",delete_invigilator, name="deleteinvigilator"),
     path("deleteexam/<slug>/",delete_exam, name="deleteexam"),
     path("deleteexamhallsession/<slug>/",delete_examhallsession, name="deleteexamhallsession"),
+    path("uploadcsv/", uploadcsv, name="uploadcsv"),
 
 
 ]
