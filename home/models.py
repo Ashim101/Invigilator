@@ -131,4 +131,5 @@ class ExamHallSession(models.Model):
             return self.room
 
     class Meta:
+        ordering= ["room__building"]
         unique_together = ["room", "shift", "date"]

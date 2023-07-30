@@ -18,8 +18,21 @@ from .forms import BuildingForm, RoomForm, InvigilatorForm, ExamForm,ExamHallSes
 
 # Create your views here.
 def home(request):
-    examhallsession_qs = ExamHallSession.objects.all()
-    return render(request,"home.html",{"examhallsessions":examhallsession_qs} )
+    # examhallsession_qs = ExamHallSession.objects.all()
+    # building=Building.objects.all()
+    # return render(request,"home.html",{"examhallsessions":examhallsession_qs,"buildings":building} )
+    buildings = Building.objects.all()
+    building_exam_data = []
+
+    for building in buildings:
+        examhallsession_qs = ExamHallSession.objects.filter(room__building=building)
+        building_data = {
+            'building': building,
+            'examhallsessions': examhallsession_qs,
+        }
+        building_exam_data.append(building_data)
+
+    return render(request, "home.html", {"building_exam_data": building_exam_data})
 
 def register(request):
     form = UserCreationForm(request.POST or None)
@@ -376,12 +389,20 @@ def uploadcsv(request):
                 # If the 'address' column is not present in the DataFrame, set address to None for all invigilators
                 df['address'] = None
             for index, row in df.iterrows():
-                firstname = row['firstname']
-                lastname = row['lastname']
-                email = row['email']
-                gender = row['gender']
-                address = row['address']
-                phone_number = row['phone_number']
+                
+                try:
+                   firstname = row['firstname']
+                   lastname = row['lastname']
+                   email = row['email']
+                   gender = row['gender']
+                   address = row['address']
+                   phone_number = row['phone_number']
+                except:
+                    messages.error(request,"File must contains first name,last name,phone_number and age")
+                    return redirect("/uploadcsv/") 
+
+
+                    
                 
                 try:
                  Invigilator.objects.create(
@@ -393,7 +414,9 @@ def uploadcsv(request):
                     phone_number=phone_number
                 )
                 except:
-                    messages.error(request,"Please donot repeat the same phone number twice")
+                    messages.error(request,"The provided phone number is alread registered")
+                    return redirect("/uploadcsv/") 
+
 
 
             return redirect("/invigilators/") 

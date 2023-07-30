@@ -2,23 +2,27 @@
 
 {% block content %}
 
-<table class="table">
+{% for building_data in building_exam_data %}
+  <h1>{{ building_data.building.name }}</h1>
+  <table class="table">
     <thead>
       <tr>
         <th scope="col">#</th>
         <th scope="col">Date</th>
         <th scope="col">Shift</th>
+        <th scope="col">Room No</th>
         <th scope="col">Exams</th>
-        <th scope="col">Room</th>
         <th scope="col">Invigilators</th>
       </tr>
     </thead>
     <tbody>
-      {% for examhallsession in examhallsessions %}
+      {% for examhallsession in building_data.examhallsessions %}
       <tr>
         <th scope="row">{{forloop.counter}}</th>
         <td>{{examhallsession.date}}</td>
         <td>{{examhallsession.shift}}</td>
+        <td>{{examhallsession.room.room_number}}</td>
+
         <td>
           <ul>
             {% for exams in examhallsession.exams.all %}
@@ -28,7 +32,6 @@
             {% endfor %}
           </ul>
         </td>
-        <td>{{examhallsession.room}}</td>
 
         <td>
           <ul>
@@ -43,6 +46,6 @@
       {% endfor %}
     </tbody>
   </table>
-
+{% endfor %}
 
 {% endblock %}

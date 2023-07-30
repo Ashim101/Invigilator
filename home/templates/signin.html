@@ -8,10 +8,13 @@
   </head>
   <body>
     {% if messages %}
-    <ul class="messages">
-       <li>{{message}}</li>
-    </ul>
+    {% for message in messages %}
+    <div class="alert alert-primary" role="alert">
+      <h4>{{message}}</h4>
+    </div>
+    {% endfor %}
     {% endif %}
+
 
     <section class="vh-100" style="background-color: #eee;">
         <div class="container h-100">
