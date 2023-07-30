@@ -28,7 +28,6 @@ urlpatterns = [
     path("deleteroom/<slug>/",delete_room, name="deleteroom"),
     path("deletebuilding/<slug>/",delete_building, name="deletebuilding"),
     path("deleteinvigilator/<slug>/",delete_invigilator, name="deleteinvigilator"),
-
     path("deleteexam/<slug>/",delete_exam, name="deleteexam"),
     path("deleteexamhallsession/<slug>/",delete_examhallsession, name="deleteexamhallsession"),
 

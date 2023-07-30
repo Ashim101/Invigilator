@@ -15,7 +15,6 @@ from home.models import *
 from .forms import BuildingForm, RoomForm, InvigilatorForm, ExamForm,ExamHallSessionForm
 
 # Create your views here.
-@login_required(login_url="/login/")
 def home(request):
     examhallsession_qs = ExamHallSession.objects.all()
     return render(request,"home.html",{"examhallsessions":examhallsession_qs} )
@@ -140,7 +139,8 @@ def invigilators(request):
     if request.GET.get("search"):
         search= request.GET.get("search")
         invigilator_qs=invigilator_qs.filter(
-            Q(fullname__icontains=search)|
+            Q(firstname__icontains=search)|
+            Q(lastname__icontains=search)|
             Q(age__icontains=search)|
             Q(gender__icontains=search)|
             Q(address__icontains=search)|

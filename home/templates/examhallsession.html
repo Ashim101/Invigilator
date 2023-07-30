@@ -10,6 +10,18 @@
     value="SAxVcmLc9wZwTAvFA8tXRIHBpyLc3FtmcTqk0zGOun0FgbnORfittqm58LhEzOCk">
   {% csrf_token %}
 
+  <div id="div_id_date" class="mb-3"> <label for="id_date" class="form-label requiredField">
+      Date<span class="asteriskField">*</span> </label> <input type="date" name="date" class="dateinput form-control"
+      required id="id_date"> </div> 
+
+  <div id="div_id_shift" class="mb-3"> <label for="id_shift" class="form-label requiredField">
+    Shift<span class="asteriskField">*</span> </label> <select onchange="updateDropdowns(this.value)" name="shift"
+    class="select form-select" required id="id_shift">
+    <option value="" selected>---------</option>
+    <option value="Morning">Morning</option>
+    <option value="Day">Day</option>
+
+  </select> </div>
 
   <div id="div_id_room" class="mb-3"> <label for="id_room" class="form-label requiredField">
       Room<span class="asteriskField">*</span> </label> <select name="room" class="select form-select" required
@@ -28,17 +40,7 @@
 
 
     </select> </div>
-  <div id="div_id_shift" class="mb-3"> <label for="id_shift" class="form-label requiredField">
-      Shift<span class="asteriskField">*</span> </label> <select onchange="updateDropdowns(this.value)" name="shift"
-      class="select form-select" required id="id_shift">
-      <option value="" selected>---------</option>
-      <option value="Morning">Morning</option>
-      <option value="Day">Day</option>
 
-    </select> </div>
-  <div id="div_id_date" class="mb-3"> <label for="id_date" class="form-label requiredField">
-      Date<span class="asteriskField">*</span> </label> <input type="date" name="date" class="dateinput form-control"
-      required id="id_date"> </div> 
 
   <input type="submit" class="btn btn-success" value="Create Examhallsession">
 <div class="d-flex flex-column justify-content-center align-items-center ">
