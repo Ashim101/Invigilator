@@ -10,10 +10,11 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.http import JsonResponse,HttpResponseRedirect
 from django.shortcuts import redirect, render
+import pandas as pd
 
 
 from home.models import *
-from .forms import BuildingForm, RoomForm, InvigilatorForm, ExamForm,ExamHallSessionForm,InvigilatorUploadForm
+from .forms import BuildingForm, RoomForm, InvigilatorForm, ExamForm,ExamHallSessionForm,InvigilatorUploadForm,ExcelUploadForm
 
 # Create your views here.
 def home(request):
@@ -363,23 +364,40 @@ def delete_examhallsession(request,slug):
     return redirect("/examhallsessions/")
 
 def uploadcsv(request):
-    if request.method == 'POST':
-        form = InvigilatorUploadForm(request.POST, request.FILES)
+
+        form = ExcelUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            csv_file = request.FILES['csv_file']
+            excel_file = request.FILES['excel_file']
+            df = pd.read_excel(excel_file)
+            if 'email' not in df.columns:
+                # If the 'email' column is not present in the DataFrame, set email to None for all invigilators
+                df['email'] = None
+            if 'address' not in df.columns:
+                # If the 'address' column is not present in the DataFrame, set address to None for all invigilators
+                df['address'] = None
+            for index, row in df.iterrows():
+                firstname = row['firstname']
+                lastname = row['lastname']
+                email = row['email']
+                gender = row['gender']
+                address = row['address']
+                phone_number = row['phone_number']
+                
+                try:
+                 Invigilator.objects.create(
+                    firstname=firstname,
+                    lastname=lastname,
+                    email=email,
+                    gender=gender,
+                    address=address,
+                    phone_number=phone_number
+                )
+                except:
+                    messages.error(request,"Please donot repeat the same phone number twice")
 
-            # Process the CSV file
-            decoded_file = csv_file.read().decode('utf-8')
-            csv_data = csv.reader(decoded_file.splitlines(), delimiter=',')
-            next(csv_data)  # Skip the header row if needed
 
-            for row in csv_data:
-                firstname, lastname = row
-                invigilator = Invigilator.objects.create(firstname=firstname, lastname=lastname)
+            return redirect("/invigilators/") 
 
-            return redirect("/invigilators/")  # Redirect to a page showing the list of invigilators
-
-    else:
-        form = InvigilatorUploadForm()
-
-    return render(request, 'addcsv.html', {'form': form})
+        else:
+         form = ExcelUploadForm()
+         return render(request, 'addcsv.html', {'form': form})

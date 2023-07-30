@@ -30,3 +30,12 @@ class ExamHallSessionForm(forms.ModelForm):
         
 class InvigilatorUploadForm(forms.Form):
     csv_file = forms.FileField()
+    
+from django import forms
+from django.core.validators import FileExtensionValidator
+
+class ExcelUploadForm(forms.Form):
+    excel_file = forms.FileField(
+        label='Choose Excel File', 
+        validators=[FileExtensionValidator(allowed_extensions=['xlsx'])]
+    )

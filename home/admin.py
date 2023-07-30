@@ -29,7 +29,7 @@ class RoomAdmin(admin.ModelAdmin):
 
 @admin.register(Invigilator)
 class InvigilatorAdmin(admin.ModelAdmin):
-    list_display = ["id", "fullname","email","age","gender","address","phone_number"]
+    list_display = ["id", "fullname","email","gender","address","phone_number"]
     search_fields = ["firstname"]
     list_filter=["gender"]
 

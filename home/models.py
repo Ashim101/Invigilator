@@ -58,11 +58,11 @@ class Invigilator(models.Model):
     
     firstname = models.CharField(max_length=255)
     lastname = models.CharField(max_length=255, blank=True, null=True)
-    email = models.EmailField(blank=True, null=True,unique=True)
-    age = models.IntegerField()
+    email = models.EmailField(blank=True, null=True)
     gender = models.CharField(max_length=7, choices=GenderChoice.choices, default=GenderChoice.MALE.value)
-    address = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=255, blank=True, null=True)
+    address = models.CharField(max_length=255,blank=True,null=True)
+    phone_number = models.CharField(max_length=255, blank=True, null=True,unique=True)
+    post = models.CharField(max_length=255, blank=True,null=True)
     slug=AutoSlugField(populate_from='firstname',unique=True,null=True,default=None)
 
 
