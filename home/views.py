@@ -404,7 +404,7 @@ def uploadcsv(request):
                    phone_number = row['phone_number']
                    post=row['post']
                 except:
-                    messages.error(request,"File must contains first name,last name,phone_number and age")
+                    messages.error(request,"File must contains first name,last name,phone_number and gender")
                     return redirect("/uploadcsv/") 
 
 
