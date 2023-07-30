@@ -30,18 +30,21 @@ def home(request):
             'building': building,
             'examhallsessions': examhallsession_qs,
         }
-        building_exam_data.append(building_data)
+        if examhallsession_qs.count()>=1:
+           building_exam_data.append(building_data)
 
     return render(request, "home.html", {"building_exam_data": building_exam_data})
 
 def register(request):
-    form = UserCreationForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        messages.success(request,"Account created successfully")
-        return HttpResponseRedirect(reverse("login"))
-    else:
-        messages.error(request,"Account not created! please try again")
+    form=UserCreationForm()
+    if request.method=="POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+          form.save()
+          messages.success(request,"Account created successfully")
+          return HttpResponseRedirect(reverse("login"))
+        else:
+          messages.error(request,"Account not created! please try again")
         
     return render(request,"signup.html",{
         "form":form,
@@ -59,9 +62,7 @@ def login_page(request):
             login(request,user)
             return HttpResponseRedirect(reverse("home"))
         else:
-            return render(request, "signin.html",{
-                "message": "Not the vaild credentials"
-            })
+            messages.error(request,"Login failed please check the username and password again")
     return render(request,"signin.html")
 
 
@@ -387,7 +388,11 @@ def uploadcsv(request):
                 df['email'] = None
             if 'address' not in df.columns:
                 # If the 'address' column is not present in the DataFrame, set address to None for all invigilators
-                df['address'] = None
+                df['address'] = None            
+            if 'post' not in df.columns:
+                # If the 'post' column is not present in the DataFrame, set post to None for all invigilators
+                df['post'] = None
+
             for index, row in df.iterrows():
                 
                 try:
@@ -397,6 +402,7 @@ def uploadcsv(request):
                    gender = row['gender']
                    address = row['address']
                    phone_number = row['phone_number']
+                   post=row['post']
                 except:
                     messages.error(request,"File must contains first name,last name,phone_number and age")
                     return redirect("/uploadcsv/") 
@@ -411,7 +417,9 @@ def uploadcsv(request):
                     email=email,
                     gender=gender,
                     address=address,
-                    phone_number=phone_number
+                    phone_number=phone_number,
+                    post=post
+                    
                 )
                 except:
                     messages.error(request,"The provided phone number is alread registered")
