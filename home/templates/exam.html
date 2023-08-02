@@ -1,7 +1,6 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
 {% block content %}
-
-
 {% load crispy_forms_tags %}
 <form action="/exams/" method="POST">
   {% csrf_token %}
@@ -14,6 +13,9 @@
       id="id_semester_type">
       <option value="Odd" selected>odd</option>
       <option value="Even">Even</option>
+      <option value="None">None</option>
+
+      
 
     </select> </div>
   <div id="div_id_regular_or_back" class="mb-3"> <label for="id_regular_or_back" class="form-label requiredField">
@@ -21,77 +23,160 @@
       class="select form-select" id="id_regular_or_back">
       <option value="Regular" selected>Regular</option>
       <option value="Back">Back</option>
+      <option value="None">None</option>
+
 
     </select> </div>
-  <div id="div_id_date" class="mb-3"> <label for="id_date" class="form-label requiredField">
-      Date<span class="asteriskField">*</span> </label> <input type="date" name="date" class="dateinput form-control"
-      required id="id_date"> </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div id="calendar"></div>
+      </div>
+      <div class="col-md-6">
+        <h1>Selected date and shift</h1>
+        <input type="text" id="selectedDatesWithShiftsField" name="selectedDatesWithShiftsField" class="form-control form-control-lg">
+
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+  </div>
   <div id="div_id_shift" class="mb-3"> <label for="id_shift" class="form-label requiredField">
-      Shift<span class="asteriskField">*</span> </label> <select name="shift" class="select form-select" id="id_shift">
-      <option value="Morning">Morning</option>
-      <option value="Day" selected>Day</option>
-
+      Shift<span class="asteriskField">*</span> </label> <select name="shift" class="select form-select" id="id_shift" multiple>
+      {% for shift in shifts %}
+        <option value="{{shift.id}}">{{shift.start}} to {{shift.end}}</option>
+{% endfor %}
     </select> </div>
-  <div id="div_id_start_time" class="mb-3"> <label for="id_start_time" class="form-label requiredField">
-      Start time<span class="asteriskField">*</span> </label> <input type="time" name="start_time"
-      class="timeinput form-control" required id="id_start_time"> </div>
-  <div id="div_id_end_time" class="mb-3"> <label for="id_end_time" class="form-label requiredField">
-      End time<span class="asteriskField">*</span> </label> <input type="time" name="end_time"
-      class="timeinput form-control" required id="id_end_time"> </div>
 
-  <input type="submit" class="btn btn-success" value="Create Exam">
-</form>
-<hr>
+  <input type="submit" class="btn btn-success"
+    value="Create Exam">
 
-<form class="d-flex mb-5 mt-5 mx-auto justify-content-center align-items-center" role="search">
-  <input class="form-control me-2 w-25" type="search" name = "search" placeholder="Search" aria-label="Search">
-  <button class="btn btn-outline-success " type="submit">Search</button>
-</form>
-<div class="d-flex flex-column justify-content-center align-items-center ">
-  <h3>List of all the exams</h3>
-</div>
-<hr>
-
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Name</th>
-      <th scope="col">Semester</th>
-      <th scope="col">Exam Type</th>
-      <th scope="col">date</th>
-      <th scope="col">shift</th>
-      <th scope="col">Start Time</th>
-      <th scope="col">End Time</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for exam in exams %}
-    <tr>
-      <th scope="row">{{forloop.counter}}</th>
-      <td>{{exam.name}}</td>
-      <td>{{exam.semester_type}}</td>
-      <td>{{exam.regular_or_back}}</td>
-      <td>{{exam.date}}</td>
-      <td>{{exam.shift}}</td>
-      <td>{{exam.start_time}}</td>
-      <td>{{exam.end_time}}</td>
-
-      <td>
-        <a href="/updateexam/{{exam.slug}}" class="text-decoration-none"><span class="material-symbols-outlined">
-          edit
-          </span>
-        </a>
-        <a href="/deleteexam/{{exam.slug}}" class="text-decoration-none">
-          <span class="material-symbols-outlined">
-            delete
-            </span>
-          </a>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const selectedDatesWithShifts = [];
+  
+        $('#calendar').fullCalendar({
+          selectable: true,
+          select: function (start, end, jsEvent, view) {
+            const date = moment(start).format('YYYY-MM-DD');
+            // Here you can show a modal or a dropdown to select the shift for the selected date
+            // For simplicity, let's assume you have a variable `selectedShift` to store the selected shift value
+            const selectedShift = $('#id_shift').val();
+            toggleDateSelection(date, selectedShift);
+          },
+          unselect: function (jsEvent, view) {
+            const date = moment(this.unselect().format('YYYY-MM-DD'));
+            toggleDateSelection(date);
+          }
+        });
+  
+        function toggleDateSelection(date, shift) {
+          const index = selectedDatesWithShifts.findIndex(item => item.date === date);
+          if (index === -1) {
+            selectedDatesWithShifts.push({ date: date, shift: shift }); // Select date if not already selected
+          } else {
+            selectedDatesWithShifts.splice(index, 1); // Unselect date if already selected
+          }
+          updateSelectedDatesWithShiftsField();
+        }
+  
+        function updateSelectedDatesWithShiftsField() {
+          const selectedDatesWithShiftsField = document.getElementById('selectedDatesWithShiftsField');
+          selectedDatesWithShiftsField.value = selectedDatesWithShifts.map(item => `${item.date}: ${item.shift}`).join(', ');
+        }
+      });
+    </script>
 
 
-{% endblock %}
+    <div class="d-flex flex-column justify-content-center align-items-center ">
+      <h3>List of all the Exams</h3>
+    </div>
+    <hr>
+  <table class="table">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Exam Name</th>
+            <th scope="col">Semester</th>
+            <th scope="col">Regular or Back</th>
+            <th scope="col">Date</th>
+            <th scope="col">Shift</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for name, exams in grouped_exams.items %}
+          <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ name }}</td>
+            <td>
+              {% for exam in exams %}
+              <div class="exam-details">
+                {{ exam.semester_type }}
+              </div>
+              {% endfor %}
+            </td>
+            <td>
+              {% for exam in exams %}
+              <div class="exam-details">
+                {{ exam.regular_or_back }}
+              </div>
+              {% endfor %}
+            </td>
+            <td>
+              {% for exam in exams %}
+              <div class="exam-details">
+                {{ exam.date }}
+              </div>
+              {% endfor %}
+            </td>
+            <td>
+              {% for exam in exams %}
+              <div class="exam-details">
+                {% for shift in exam.shift.all %}
+                {{ shift.start }} to {{ shift.end }}
+                {% endfor %}
+              </div>
+              {% endfor %}
+            </td>
+            <td>
+
+              {%  for exam in exams %}
+              <div class="p-1">
+
+              <div>
+          
+              <a href="/updateexam/{{exam.slug}}" class="text-decoration-none">
+                <span class="material-symbols-outlined">
+                  edit
+                </span>
+              </a>
+  <a href="/deleteexam/{{exam.slug}}" class="text-decoration-none">
+                <span class="material-symbols-outlined">
+                  delete
+                </span>
+              </a>
+            </div>
+          </div>
+              {% endfor %}
+
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      
+      <style>
+        .exam-details {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          justify-content: space-between;
+          padding: 5px;
+        }
+      </style>
+      
+
+  {% endblock %}

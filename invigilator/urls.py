@@ -13,6 +13,7 @@ urlpatterns = [
     path("register/", register, name="register"),
     path("login/", login_page, name="login"),
     path("logout/", logout_page, name="logout"),
+    path("shifts/", shifts, name="shifts"),
     path("rooms/", rooms, name="rooms"),
     path("exams/", exams, name="exams"),
     path("buildings/", buildings, name="buildings"),

@@ -11,10 +11,12 @@ from django.http import JsonResponse
 from django.http import JsonResponse,HttpResponseRedirect
 from django.shortcuts import redirect, render
 import pandas as pd
+from datetime import datetime
+from itertools import groupby
 
 
 from home.models import *
-from .forms import BuildingForm, RoomForm, InvigilatorForm, ExamForm,ExamHallSessionForm,InvigilatorUploadForm,ExcelUploadForm
+from .forms import BuildingForm, RoomForm, InvigilatorForm, ExamForm,ExamHallSessionForm,InvigilatorUploadForm,ExcelUploadForm,ShiftForm
 
 # Create your views here.
 def home(request):
@@ -41,7 +43,7 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
           form.save()
-          messages.success(request,"Account created successfully")
+          messages.uccess(request,"Account created successfully")
           return HttpResponseRedirect(reverse("login"))
         else:
           messages.error(request,"Account not created! please try again")
@@ -70,6 +72,30 @@ def login_page(request):
 def logout_page(request):
     logout(request)
     return HttpResponseRedirect(reverse("login"))
+
+
+
+
+@login_required(login_url="/login/")
+def shifts(request):
+    form = ShiftForm()
+    building_qs = Shift.objects.all()
+    if request.GET.get("search"):
+        search= request.GET.get("search")
+        building_qs=building_qs.filter(
+            Q(name__icontains=search)
+
+            )
+    context = {
+        "form":form,
+        "shifts":building_qs
+    }
+    if request.method == "POST":
+        form=ShiftForm(request.POST)
+        if form.is_valid():
+           form.save()
+
+    return render(request, "shift.html",context=context)
 
 
 
@@ -124,7 +150,8 @@ def rooms(request):
 @login_required(login_url="/login/")
 def exams(request):
     form = ExamForm()
-    exam_qs = Exam.objects.all()
+    exams = Exam.objects.all().order_by('name')
+  
     if request.GET.get("search"):
         search= request.GET.get("search")
         exam_qs=exam_qs.filter(
@@ -132,18 +159,48 @@ def exams(request):
             Q(semester_type__icontains=search)|
             Q(date__icontains=search)|
             Q(regular_or_back__icontains=search)
+    
 
 
 
             )
+    shifts =Shift.objects.all()
+
+
+    if request.method == "POST":
+        selected_dates_with_shifts = request.POST.get('selectedDatesWithShiftsField')
+        dates_with_shifts_list = selected_dates_with_shifts.split(', ')
+
+        for date_with_shift in dates_with_shifts_list:
+            date, shifts = date_with_shift.split(': ')
+            date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+
+            # Now, shifts will be a comma-separated string, you can further process it to create the ManyToMany relationship
+            shifts_list = [int(shift) for shift in shifts.split(',')]
+            exam_exists = Exam.objects.filter(name=request.POST.get('name'),
+                                 date=date_obj, shift__in=shifts_list).exists()
+
+            if not exam_exists:
+            # Create Exam object with the selected date and shifts
+                exam = Exam.objects.create(date=date_obj,
+                                       name=request.POST.get('name'),
+                                       semester_type=request.POST.get('semester_type'),
+                                        regular_or_back=request.POST.get('regular_or_back'),
+                                        )
+                exam.shift.set(shifts_list)
+            else:
+                messages.error(request,"This exam name of the given date and shift already exist")
+    grouped_exams = {}
+    for name, exams_group in groupby(exams, lambda x: x.name):
+        grouped_exams[name] = list(exams_group) 
     context = {
         "form":form,
-        "exams":exam_qs
+        "grouped_exams":grouped_exams,
+        "shifts":shifts
     }
-    if request.method == "POST":
-        form=ExamForm(request.POST)
-        if form.is_valid():
-           form.save()
+
+        # Redirect or return response as needed after creating the Exam objects
+        # For example, you can redirect the user to a new page showing the created exams.
 
     return render(request, "exam.html",context=context)
 
@@ -156,9 +213,11 @@ def invigilators(request):
         invigilator_qs=invigilator_qs.filter(
             Q(firstname__icontains=search)|
             Q(lastname__icontains=search)|
-            Q(age__icontains=search)|
             Q(gender__icontains=search)|
             Q(address__icontains=search)|
+            Q(post__icontains=search)|
+
+            
             Q(phone_number__icontains=search)
 
 

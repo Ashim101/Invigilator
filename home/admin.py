@@ -35,13 +35,13 @@ class InvigilatorAdmin(admin.ModelAdmin):
 
 @admin.register(Exam)
 class ExamAdmin(admin.ModelAdmin):
-    list_display = ["id", "name","semester_type","regular_or_back","date","shift","start_time","end_time"]
+    list_display = ["id", "name","semester_type","regular_or_back"]
     search_fields = ["name"]
     list_filter=["semester_type"]
 
 @admin.register(ExamHallSession)
 class ExamHallSessionAdmin(admin.ModelAdmin):
-    list_display = ["id", "room","shift","date","exams_name"]
+    list_display = ["id", "room","date","exams_name"]
     def exams_name(self,obj):
        return ', '.join([exam.name for exam in obj.exams.all()])
             

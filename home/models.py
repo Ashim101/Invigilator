@@ -63,7 +63,7 @@ class Invigilator(models.Model):
     email = models.EmailField(blank=True, null=True)
     gender = models.CharField(max_length=7, choices=GenderChoice.choices, default=GenderChoice.MALE.value)
     address = models.CharField(max_length=255,blank=True,null=True)
-    phone_number = models.CharField(max_length=255, blank=True, null=True,unique=True)
+    phone_number = models.CharField(max_length=255,unique=True)
     post = models.CharField(max_length=255, blank=True,null=True)
     slug=AutoSlugField(populate_from='firstname',unique=True,null=True,default=None)
 
@@ -82,30 +82,40 @@ class Invigilator(models.Model):
         return Invigilator.objects.all().exclude(id__in=assigned_invigilators) 
 
 
- 
+class Shift(models.Model):
+    start=models.IntegerField()
+    end=models.IntegerField()
+    
+    def __str__(self):
+            return str(self.start) + "to" + str(self.end)
+
+    
 class Exam(models.Model):
     
     class Semester_typeChoice(models.TextChoices):
         ODD = "Odd", "odd"
         EVEN = "Even", "Even"
+        NONE = "None", "None"
+
     
     class RegularOrBackChoices(models.TextChoices):
         REGULAR = "Regular", "Regular"
         BACK = "Back", "Back"
+        NONE = "None", "None"
+
+
     class ShiftChoice(models.TextChoices):
-        MORNING = "Morning", "Morning"
-        DAY = "Day", "Day"
+        SIX = "6-9", "6-9"
+        DAY = "12-12", "10-12"
+    
+
     name = models.CharField(max_length=255)
     semester_type = models.CharField(max_length=50,choices=Semester_typeChoice.choices,default=Semester_typeChoice.ODD.value)
     regular_or_back = models.CharField(max_length=50,choices=RegularOrBackChoices.choices,default=RegularOrBackChoices.REGULAR.value)
-
     date = models.DateField()
-    shift = models.CharField(max_length=255,choices=ShiftChoice.choices, default=ShiftChoice.DAY.value)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
+    shift = models.ManyToManyField(Shift)
     slug=AutoSlugField(populate_from='name',unique=True,null=True,default=None)
 
-    
     @staticmethod
     def get_unmanaged_exams(date, shift):
         managed_exams = ExamHallSession.objects.filter(date=date, shift=shift).values('exams')
@@ -122,8 +132,7 @@ class ExamHallSession(models.Model):
     )
     exams = models.ManyToManyField(Exam)
     invigilators = models.ManyToManyField(Invigilator)
-
-    shift = models.CharField(max_length=255,choices=ShiftChoice.choices)
+    shift = models.CharField(max_length=255,choices=ShiftChoice.choices,default=ShiftChoice.MORNING.value)
     date = models.DateField()
     slug=AutoSlugField(populate_from='date',unique=True,null=True,default=None)
 
@@ -134,4 +143,4 @@ class ExamHallSession(models.Model):
 
     class Meta:
         ordering= ["room__building"]
-        unique_together = ["room", "shift", "date"]
+        # unique_together = ["room", "shift", "date"]

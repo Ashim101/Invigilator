@@ -1,10 +1,15 @@
 from django import forms
-from .models import Building, Room, Invigilator, Exam,ExamHallSession
+from .models import Building, Room, Invigilator, Exam,ExamHallSession,Shift
 
 class BuildingForm(forms.ModelForm):
     class Meta:
         model=Building
         fields=("id","name")
+        
+class ShiftForm(forms.ModelForm):
+    class Meta:
+        model=Shift
+        fields="__all__"
 
 
 class RoomForm(forms.ModelForm):
