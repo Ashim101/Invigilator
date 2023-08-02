@@ -199,8 +199,7 @@ def exams(request):
         "shifts":shifts
     }
 
-        # Redirect or return response as needed after creating the Exam objects
-        # For example, you can redirect the user to a new page showing the created exams.
+
 
     return render(request, "exam.html",context=context)
 

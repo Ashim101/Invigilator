@@ -61,8 +61,7 @@
           selectable: true,
           select: function (start, end, jsEvent, view) {
             const date = moment(start).format('YYYY-MM-DD');
-            // Here you can show a modal or a dropdown to select the shift for the selected date
-            // For simplicity, let's assume you have a variable `selectedShift` to store the selected shift value
+
             const selectedShift = $('#id_shift').val();
             toggleDateSelection(date, selectedShift);
           },
@@ -75,9 +74,9 @@
         function toggleDateSelection(date, shift) {
           const index = selectedDatesWithShifts.findIndex(item => item.date === date);
           if (index === -1) {
-            selectedDatesWithShifts.push({ date: date, shift: shift }); // Select date if not already selected
+            selectedDatesWithShifts.push({ date: date, shift: shift }); 
           } else {
-            selectedDatesWithShifts.splice(index, 1); // Unselect date if already selected
+            selectedDatesWithShifts.splice(index, 1); 
           }
           updateSelectedDatesWithShiftsField();
         }
