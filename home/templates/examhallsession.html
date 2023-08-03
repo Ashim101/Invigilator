@@ -18,8 +18,12 @@
     Shift<span class="asteriskField">*</span> </label> <select onchange="updateDropdowns(this.value)" name="shift"
     class="select form-select" required id="id_shift">
     <option value="" selected>---------</option>
-    <option value="Morning">Morning</option>
-    <option value="Day">Day</option>
+    {% for shift in shifts %}
+    <option value="{{shift.id}}">{{shift.start}} to {{shift.end}}</option>
+    {% endfor %}
+
+     
+
 
   </select> </div>
 

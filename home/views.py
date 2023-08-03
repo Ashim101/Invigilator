@@ -254,9 +254,11 @@ def examhallsessions(request):
             Q(invigilators__firstname__icontains=search)|
             Q(date__icontains=search)
             )
+    shifts=Shift.objects.all()
     context = {
         "form":form,
-        "examhallsessions":examhallsession_qs
+        "examhallsessions":examhallsession_qs,
+        "shifts":shifts
     }
     if request.method == "POST":
         form=ExamHallSessionForm(request.POST)

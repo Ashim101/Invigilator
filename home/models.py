@@ -43,7 +43,7 @@ class Room(models.Model):
         return self.building.name + " building room " + self.room_number
     @staticmethod
     def get_available_rooms(date, shift):
-        assigned_rooms= ExamHallSession.objects.filter(date=date, shift=shift).values('room')
+        assigned_rooms= ExamHallSession.objects.filter(date=date, shift__in=shift).values('room')
         return Room.objects.all().exclude(id__in=assigned_rooms) 
  
 
@@ -118,7 +118,7 @@ class Exam(models.Model):
 
     @staticmethod
     def get_unmanaged_exams(date, shift):
-        managed_exams = ExamHallSession.objects.filter(date=date, shift=shift).values('exams')
+        managed_exams = ExamHallSession.objects.filter(date=date, shift__in=shift).values('exams')
         return Exam.objects.filter(date=date, shift=shift).exclude(id__in=managed_exams)    
     def __str__(self) -> str:
         return self.name +" "+ self.semester_type +" "+ self.regular_or_back
@@ -132,7 +132,7 @@ class ExamHallSession(models.Model):
     )
     exams = models.ManyToManyField(Exam)
     invigilators = models.ManyToManyField(Invigilator)
-    shift = models.CharField(max_length=255,choices=ShiftChoice.choices,default=ShiftChoice.MORNING.value)
+    shift = models.ForeignKey(Shift,on_delete=models.CASCADE,related_name="examhallsessions")
     date = models.DateField()
     slug=AutoSlugField(populate_from='date',unique=True,null=True,default=None)
 
