@@ -10,6 +10,19 @@
     value="SAxVcmLc9wZwTAvFA8tXRIHBpyLc3FtmcTqk0zGOun0FgbnORfittqm58LhEzOCk">
   {% csrf_token %}
 
+  <div id="div_id_building" class="mb-3"> <label for="id_building" class="form-label requiredField">
+    Building<span class="asteriskField">*</span> </label> <select  name="building"
+    class="select form-select" required id="id_building">
+    <option value="" selected>---------</option>
+    {% for building in buildings %}
+    <option value="{{building.id}}">{{building.name}}</option>
+    {% endfor %}
+
+     
+
+
+  </select> </div>
+
   <div id="div_id_date" class="mb-3"> <label for="id_date" class="form-label requiredField">
       Date<span class="asteriskField">*</span> </label> <input type="date" name="date" class="dateinput form-control"
       required id="id_date"> </div> 
@@ -58,6 +71,8 @@
       <th scope="col">Date</th>
       <th scope="col">Shift</th>
       <th scope="col">Exams</th>
+      <th scope="col">Type</th>
+
       <th scope="col">Room</th>
       <th scope="col">Invigilators</th>
 
@@ -73,11 +88,21 @@
         <ul>
           {% for exams in examhallsession.exams.all %}
           <li>
-            {{exams}}
+            {{exams.name}}
           </li>
           {% endfor %}
         </ul>
       </td>
+
+      <td>
+        <ul>
+          {% for exams in examhallsession.exams.all %}
+          <li>
+            {{exams.regular_or_back}} {{exams.semester_type}} semester
+          </li>
+          {% endfor %}
+        </ul>
+      </td>      
       <td>{{examhallsession.room}}</td>
 
       <td>
@@ -92,10 +117,10 @@
 
       <td>
         
-        <a href="/updateexamhallsession/{{examhallsession.slug}}" class="text-decoration-none"><span class="material-symbols-outlined">
+        {% comment %} <a href="/updateexamhallsession/{{examhallsession.slug}}" class="text-decoration-none"><span class="material-symbols-outlined">
           edit
           </span>
-        </a>
+        </a> {% endcomment %}
         <a href="/deleteexamhallsession/{{examhallsession.slug}}" class="text-decoration-none">
           <span class="material-symbols-outlined">
             delete
@@ -111,11 +136,13 @@
   function updateDropdowns(selectedOption) {
     console.log('ajax called.');
     date = document.getElementById("id_date").value;
+    building = document.getElementById("id_building").value;
+
 
     $.ajax({
       url: '/get-data/',
       type: 'GET',
-      data: { 'date': date, 'shift': selectedOption },
+      data: { 'date': date, 'shift': selectedOption, 'building': building },
       dataType: 'json',
       success: function (data) {
         exams = data.exams

@@ -13,6 +13,8 @@ from django.shortcuts import redirect, render
 import pandas as pd
 from datetime import datetime
 from itertools import groupby
+from django.db.models.functions import Concat
+
 
 
 from home.models import *
@@ -176,20 +178,23 @@ def exams(request):
             date_obj = datetime.strptime(date, '%Y-%m-%d').date()
             shifts_list=[]
             for shiftrange in shiftranges.split(','):
+              try:
                 shift_start,shift_end=shiftrange.split('-')
                 shift_start = int(shift_start)
                 shift_end = int(shift_end)
                 id=Shift.objects.get(start=shift_start,end=shift_end).id
                 shifts_list.append(id)
+              except:
+                  messages.error(request,"Please enter the shift")
             # Now, shifts will be a comma-separated string, you can further process it to create the ManyToMany relationship
             # shifts_list = [int(shift) for shift in shifts.split(',')]
-            exam_exists = Exam.objects.filter(name=request.POST.get('name'),
+            exam_exists = Exam.objects.filter(name=request.POST.get('name').upper(),
                                  date=date_obj, shift__in=shifts_list).exists()
 
             if not exam_exists:
             # Create Exam object with the selected date and shifts
                 exam = Exam.objects.create(date=date_obj,
-                                       name=request.POST.get('name'),
+                                       name=request.POST.get('name').upper(),
                                        semester_type=request.POST.get('semester_type'),
                                         regular_or_back=request.POST.get('regular_or_back'),
                                         )
@@ -220,17 +225,20 @@ def invigilators(request):
     search_post = request.GET.get("search_post")
 
     if search_name:
-        invigilator_qs = invigilator_qs.filter(Q(firstname__icontains=search_name) | Q(lastname__icontains=search_name))
+        invigilator_qs = invigilator_qs.filter(Q(firstname__icontains=search_name.upper()) | Q(lastname__icontains=search_name))
 
     if search_gender:
-        invigilator_qs = invigilator_qs.filter(gender__icontains=search_gender)
+        invigilator_qs = invigilator_qs.filter(gender=search_gender.upper())
 
     if search_address:
-        invigilator_qs = invigilator_qs.filter(address__icontains=search_address)
+        invigilator_qs = invigilator_qs.filter(address__icontains=search_address.upper())
 
     if search_post:
-        invigilator_qs = invigilator_qs.filter(post__icontains=search_post)
+        invigilator_qs = invigilator_qs.filter(post__icontains=search_post.upper())
 
+
+
+            
     context = {
         "form":form,
         "invigilators":invigilator_qs
@@ -255,6 +263,7 @@ def invigilators(request):
 def examhallsessions(request):
     form = ExamHallSessionForm()
     examhallsession_qs = ExamHallSession.objects.all()
+    buildings=Building.objects.all()
     if request.GET.get("search"):
         search= request.GET.get("search")
         examhallsession_qs=examhallsession_qs.filter(
@@ -266,6 +275,7 @@ def examhallsessions(request):
     context = {
         "form":form,
         "examhallsessions":examhallsession_qs,
+        "buildings":buildings,
         "shifts":shifts
     }
     if request.method == "POST":
@@ -287,12 +297,17 @@ def examhallsessions(request):
 def get_data(request):
     date = request.GET.get('date')
     shift = request.GET.get('shift')
+    building = request.GET.get('building')
+
     
 
     from django.db.models import F
+    from django.db.models import CharField, Value
+
     exams=Exam.get_unmanaged_exams(date=date,shift=shift).values("id", "name")
     invigilators=Invigilator.get_available_invigilator(date=date,shift=shift).annotate(name=F("firstname")).values("id", "name")
-    rooms=Room.get_available_rooms(date=date,shift=shift).annotate(name=F("room_number")).values("id", "name")
+    rooms=Room.get_available_rooms(date=date,shift=shift).annotate(name=F("room_number")
+    ).filter(building=building).values("id", "name")
 
     context = {
         "exams": list(exams),
@@ -453,27 +468,24 @@ def uploadcsv(request):
             df = pd.read_excel(excel_file)
             if 'email' not in df.columns:
                 # If the 'email' column is not present in the DataFrame, set email to None for all invigilators
-                df['email'] = None
+                df['email'] = "None"
             if 'address' not in df.columns:
                 # If the 'address' column is not present in the DataFrame, set address to None for all invigilators
-                df['address'] = None            
+                df['address'] = "None"           
             if 'post' not in df.columns:
                 # If the 'post' column is not present in the DataFrame, set post to None for all invigilators
-                df['post'] = None
+                df['post'] = "None"
 
             for index, row in df.iterrows():
                 
-                try:
-                   firstname = row['firstname']
-                   lastname = row['lastname']
-                   email = row['email']
-                   gender = row['gender']
-                   address = row['address']
-                   phone_number = row['phone_number']
-                   post=row['post']
-                except:
-                    messages.error(request,"File must contains first name,last name,phone_number and gender")
-                    return redirect("/uploadcsv/") 
+                firstname = row['firstname'].upper()
+                lastname = row['lastname'].upper()
+                email = row['email']
+                gender = row['gender'].upper()
+                address = row['address'].upper()
+                phone_number = row['phone_number']
+                post=row['post'].upper()
+
 
 
                     

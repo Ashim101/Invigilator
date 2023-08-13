@@ -37,6 +37,9 @@ class Room(models.Model):
     room_number = models.CharField(max_length=30)
     slug=AutoSlugField(populate_from='room_number',unique=True,null=True,default=None)
 
+    @property
+    def formatted_name(self):
+        return f"{self.building.name} building room {self.room_number}"
 
 
     def __str__(self):
@@ -54,9 +57,9 @@ class Room(models.Model):
 
 class Invigilator(models.Model):
     class GenderChoice(models.TextChoices):
-        MALE = "male", "male"
-        FEMALE = "female", "female"
-        OTHERS = "others", "others"
+        MALE = "MALE", "MALE"
+        FEMALE = "FEMALE", "FEMALE"
+        OTHERS = "OTHERS", "OTHERS"
     
     firstname = models.CharField(max_length=255)
     lastname = models.CharField(max_length=255, blank=True, null=True)

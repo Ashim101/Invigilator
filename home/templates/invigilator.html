@@ -22,9 +22,9 @@
   <input class="form-control me-2 w-25" type="search" name="search_name" placeholder="Search by Name" aria-label="Search Name">
    <select  name="search_gender" class="select form-select w-25 mr-1" 
     id="id_semester_type">
-    <option value="" selected hidden>----</option>\
-    <option value="Male">Male</option>
-    <option value="Female">Female</option>
+    <option value="" selected hidden>Gender</option>\
+    <option value="MALE">Male</option>
+    <option value="FEMALE">Female</option>
 
     
 
@@ -59,7 +59,7 @@
       <th scope="row">{{forloop.counter}}</th>
       <td>{{invigilator.fullname}}</td>
       <td>{{invigilator.email}}</td>
-      <td>{{invigilator.gender|title}}</td>
+      <td>{{invigilator.gender}}</td>
       <td>{{invigilator.address}}</td>
       <td>{{invigilator.phone_number}}</td>
       <td>{{invigilator.post}}</td>
