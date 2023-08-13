@@ -5,8 +5,11 @@ from autoslug import AutoSlugField
 class Building(models.Model):
     name = models.CharField(max_length=255, unique=True)
     slug=AutoSlugField(populate_from='name',unique=True,null=True,default=None)
+    def save(self, *args, **kwargs):
+        # Convert attributes to uppercase
+        self.name=self.name.upper()
 
-
+        super().save(*args, **kwargs)
     def __str__(self):
         return self.name
     class Meta:
@@ -69,6 +72,17 @@ class Invigilator(models.Model):
     phone_number = models.CharField(max_length=255,unique=True)
     post = models.CharField(max_length=255, blank=True,null=True)
     slug=AutoSlugField(populate_from='firstname',unique=True,null=True,default=None)
+    def save(self, *args, **kwargs):
+        # Convert attributes to uppercase
+        self.firstname = self.firstname.upper()
+        if self.lastname:
+            self.lastname = self.lastname.upper()
+        if self.post:
+            self.post = self.post.upper()
+        if self.address:
+            self.address = self.address.upper()
+
+        super().save(*args, **kwargs)
 
 
     def __str__(self):
