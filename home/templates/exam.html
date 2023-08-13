@@ -46,7 +46,7 @@
   <div id="div_id_shift" class="mb-3"> <label for="id_shift" class="form-label requiredField">
       Shift<span class="asteriskField">*</span> </label> <select name="shift" class="select form-select" id="id_shift" multiple>
       {% for shift in shifts %}
-        <option value="{{shift.id}}">{{shift.start}} to {{shift.end}}</option>
+        <option value="{{shift.start}}-{{shift.end}}">{{shift.start}} to {{shift.end}}</option>
 {% endfor %}
     </select> </div>
 

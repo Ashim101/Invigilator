@@ -19,8 +19,19 @@
 <hr>
 
 <form class="d-flex mb-5 mt-5 mx-auto justify-content-center align-items-center" role="search">
-  <input class="form-control me-2 w-25" type="search" name = "search" placeholder="Search" aria-label="Search">
-  <button class="btn btn-outline-success " type="submit">Search</button>
+  <input class="form-control me-2 w-25" type="search" name="search_name" placeholder="Search by Name" aria-label="Search Name">
+   <select  name="search_gender" class="select form-select w-25 mr-1" 
+    id="id_semester_type">
+    <option value="" selected hidden>----</option>\
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
+
+    
+
+  </select> 
+   <input class="form-control me-2 w-25" type="search" name="search_address" placeholder="Search by Address" aria-label="Search Address">
+  <input class="form-control me-2 w-25" type="search" name="search_post" placeholder="Search by Post" aria-label="Search Post">
+  <button class="btn btn-outline-success" type="submit">Search</button>
 </form>
 <div class="d-flex flex-column justify-content-center align-items-center ">
   <h3>List of all the invigilators</h3>

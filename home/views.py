@@ -172,11 +172,17 @@ def exams(request):
         dates_with_shifts_list = selected_dates_with_shifts.split(', ')
 
         for date_with_shift in dates_with_shifts_list:
-            date, shifts = date_with_shift.split(': ')
+            date, shiftranges= date_with_shift.split(': ')
             date_obj = datetime.strptime(date, '%Y-%m-%d').date()
-
+            shifts_list=[]
+            for shiftrange in shiftranges.split(','):
+                shift_start,shift_end=shiftrange.split('-')
+                shift_start = int(shift_start)
+                shift_end = int(shift_end)
+                id=Shift.objects.get(start=shift_start,end=shift_end).id
+                shifts_list.append(id)
             # Now, shifts will be a comma-separated string, you can further process it to create the ManyToMany relationship
-            shifts_list = [int(shift) for shift in shifts.split(',')]
+            # shifts_list = [int(shift) for shift in shifts.split(',')]
             exam_exists = Exam.objects.filter(name=request.POST.get('name'),
                                  date=date_obj, shift__in=shifts_list).exists()
 
@@ -207,22 +213,24 @@ def exams(request):
 def invigilators(request):
     form = InvigilatorForm()
     invigilator_qs = Invigilator.objects.all()
-    if request.GET.get("search"):
-        search= request.GET.get("search")
-        invigilator_qs=invigilator_qs.filter(
-            Q(firstname__icontains=search)|
-            Q(lastname__icontains=search)|
-            Q(gender__icontains=search)|
-            Q(address__icontains=search)|
-            Q(post__icontains=search)|
 
-            
-            Q(phone_number__icontains=search)
+    search_name = request.GET.get("search_name")
+    search_gender = request.GET.get("search_gender")
+    search_address = request.GET.get("search_address")
+    search_post = request.GET.get("search_post")
 
+    if search_name:
+        invigilator_qs = invigilator_qs.filter(Q(firstname__icontains=search_name) | Q(lastname__icontains=search_name))
 
+    if search_gender:
+        invigilator_qs = invigilator_qs.filter(gender__icontains=search_gender)
 
+    if search_address:
+        invigilator_qs = invigilator_qs.filter(address__icontains=search_address)
 
-            )
+    if search_post:
+        invigilator_qs = invigilator_qs.filter(post__icontains=search_post)
+
     context = {
         "form":form,
         "invigilators":invigilator_qs
