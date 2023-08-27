@@ -466,32 +466,33 @@ def uploadcsv(request):
         if form.is_valid():
             excel_file = request.FILES['excel_file']
             df = pd.read_excel(excel_file)
-            if 'email' not in df.columns:
+            if 'Email' not in df.columns:
                 # If the 'email' column is not present in the DataFrame, set email to None for all invigilators
-                df['email'] = "None"
-            if 'address' not in df.columns:
+                df['Email'] = "None"
+            if 'Address' not in df.columns:
                 # If the 'address' column is not present in the DataFrame, set address to None for all invigilators
-                df['address'] = "None"           
-            if 'post' not in df.columns:
+                df['Address'] = "None"           
+            if 'Post' not in df.columns:
                 # If the 'post' column is not present in the DataFrame, set post to None for all invigilators
-                df['post'] = "None"
-
+                df['Post'] = "None"
             for index, row in df.iterrows():
-                
-                firstname = row['firstname'].upper()
-                lastname = row['lastname'].upper()
-                email = row['email']
-                gender = row['gender'].upper()
-                address = row['address'].upper()
-                phone_number = row['phone_number']
-                post=row['post'].upper()
-
+              try:
+                firstname = row['Firstname'].upper()
+                lastname = row['Lastname'].upper()
+                email = row['Email']
+                gender = row['Gender'].upper()
+                address = row['Address'].upper()
+                phone_number = row['Phone_number']
+                post=row['Post'].upper()
+              except:
+                messages.error(request,"Firstname Lastname Gender and Phone number must be given")
+                return redirect("/uploadcsv/") 
 
 
                     
                 
-                try:
-                 Invigilator.objects.create(
+              try:
+                  Invigilator.objects.create(
                     firstname=firstname,
                     lastname=lastname,
                     email=email,
@@ -501,7 +502,7 @@ def uploadcsv(request):
                     post=post
                     
                 )
-                except:
+              except:
                     messages.error(request,"The provided phone number is alread registered")
                     return redirect("/uploadcsv/") 
 
@@ -512,3 +513,39 @@ def uploadcsv(request):
         else:
          form = ExcelUploadForm()
          return render(request, 'addcsv.html', {'form': form})
+     
+     
+from openpyxl import Workbook
+from django.http import HttpResponse
+
+
+def generate_invigilators_excel(request):
+    invigilators = Invigilator.objects.all()
+
+    # Create a new Excel workbook and add a worksheet
+    wb = Workbook()
+    ws = wb.active
+
+    # Write header row
+    ws.append(["Firstname", "Lastname", "Email", "Gender", "Address", "Phone_number", "Post"])
+
+    # Write invigilator data to the worksheet
+    for invigilator in invigilators:
+        ws.append([
+            invigilator.firstname,
+            invigilator.lastname,
+            invigilator.email,
+            invigilator.gender,
+            invigilator.address,
+            invigilator.phone_number,
+            invigilator.post,
+        ])
+
+    # Create the response with appropriate headers
+    response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response["Content-Disposition"] = "attachment; filename=invigilators.xlsx"
+
+    # Save the workbook to the response
+    wb.save(response)
+
+    return response
