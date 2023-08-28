@@ -14,9 +14,6 @@ import pandas as pd
 from datetime import datetime
 from itertools import groupby
 from django.db.models.functions import Concat
-
-
-
 from home.models import *
 from .forms import BuildingForm, RoomForm, InvigilatorForm, ExamForm,ExamHallSessionForm,InvigilatorUploadForm,ExcelUploadForm,ShiftForm
 
@@ -36,7 +33,6 @@ def home(request):
         }
         if examhallsession_qs.count()>=1:
            building_exam_data.append(building_data)
-
     return render(request, "home.html", {"building_exam_data": building_exam_data})
 
 def register(request):
@@ -49,7 +45,6 @@ def register(request):
           return HttpResponseRedirect(reverse("login"))
         else:
           messages.error(request,"Account not created! please try again")
-        
     return render(request,"signup.html",{
         "form":form,
     })
@@ -98,8 +93,6 @@ def shifts(request):
            form.save()
 
     return render(request, "shift.html",context=context)
-
-
 
 @login_required(login_url="/login/")
 def buildings(request):
