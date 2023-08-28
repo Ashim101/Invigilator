@@ -44,9 +44,6 @@ class ExamHallSessionAdmin(admin.ModelAdmin):
     list_display = ["id", "room","date","exams_name"]
     def exams_name(self,obj):
        return ', '.join([exam.name for exam in obj.exams.all()])
-            
-        
-        
     list_filter=["room","shift"]
     filter_horizontal = ["exams", "invigilators"]
 
